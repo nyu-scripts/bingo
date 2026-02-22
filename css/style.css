@@ -144,7 +144,7 @@ select:focus {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 4px;
-  max-width: 500px;
+  max-width: 600px;
   margin: 0 auto;
 }
 

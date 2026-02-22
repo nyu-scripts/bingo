@@ -77,13 +77,8 @@ const WIN_PATTERNS = (() => {
     {
       id: "stamp",
       name: "Postage Stamp",
-      sets: [
-        [0, 1, 5, 6],     // top-left 2x2
-        [3, 4, 8, 9],     // top-right 2x2
-        [15, 16, 20, 21], // bottom-left 2x2
-        [18, 19, 23, 24], // bottom-right 2x2
-      ],
-      grid: gridFrom([0, 1, 5, 6]), // preview shows top-left
+      sets: [[0, 1, 5, 6]],
+      grid: gridFrom([0, 1, 5, 6]),
     },
     {
       id: "letter-t",

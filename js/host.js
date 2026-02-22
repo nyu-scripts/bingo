@@ -257,20 +257,30 @@ function verifyBingo() {
     }
   }
 
+  // Get goal cells for dimming non-essential cells
+  var goalCells = new Set();
+  var verifyPattern = getPattern(hostState.patternId);
+  if (verifyPattern && verifyPattern.sets && verifyPattern.sets.length === 1) {
+    for (var g = 0; g < verifyPattern.sets[0].length; g++) {
+      goalCells.add(verifyPattern.sets[0][g]);
+    }
+  }
+
   var resultEl = document.getElementById("verify-result");
   resultEl.innerHTML =
     '<div class="verify-message ' + (winResult ? "pass" : "fail") + '">' +
       (winResult ? "Valid BINGO! (" + winResult + ")" : "Not a valid BINGO") +
     '</div>' +
     '<div class="verify-player-name">' + label + '</div>' +
-    renderVerifyGrid(cells, marked, winCells);
+    renderVerifyGrid(cells, marked, winCells, goalCells);
 }
 
-function renderVerifyGrid(cells, marked, winCells) {
+function renderVerifyGrid(cells, marked, winCells, goalCells) {
   var html = '<div class="verify-grid">';
   for (var i = 0; i < 25; i++) {
     var cls = marked.has(i) ? "drawn" : "not-drawn";
     if (winCells && winCells.has(i)) cls += " win-cell";
+    if (goalCells && goalCells.size > 0 && !goalCells.has(i) && !cells[i].free) cls += " dim-cell";
     if (cells[i].free) {
       html += '<div class="' + cls + '"><span>FREE</span></div>';
     } else if (cells[i].image) {

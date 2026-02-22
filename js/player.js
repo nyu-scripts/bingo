@@ -77,10 +77,14 @@ function enterGame(e) {
     // Show target pattern
     var pattern = getPattern(playerState.patternId);
     var goalEl = document.getElementById("goal-indicator");
+    var hasGoalCells = pattern && pattern.sets && pattern.sets.length === 1;
     goalEl.innerHTML =
       '<span class="goal-label">Goal:</span>' +
       renderPatternPreview(pattern) +
-      '<span class="goal-name">' + pattern.name + '</span>';
+      '<span class="goal-name">' + pattern.name + '</span>' +
+      (hasGoalCells
+        ? '<label class="focus-toggle"><input type="checkbox" id="focus-goal" onchange="toggleFocusGoal(this.checked)"> Focus</label>'
+        : '');
 
     savePlayerData();
     renderCard();
@@ -92,10 +96,24 @@ function renderCard() {
   var grid = document.getElementById("bingo-grid");
   grid.innerHTML = "";
 
+  // Get goal cells from pattern — only for single-set patterns
+  // Multi-set patterns (Any Line, Postage Stamp, etc.) are ambiguous
+  var pattern = getPattern(playerState.patternId);
+  var goalCells = new Set();
+  if (pattern && pattern.sets && pattern.sets.length === 1) {
+    for (var c = 0; c < pattern.sets[0].length; c++) {
+      goalCells.add(pattern.sets[0][c]);
+    }
+  }
+
   playerState.cells.forEach(function(cell, idx) {
     var div = document.createElement("div");
     div.className = "bingo-cell";
     div.dataset.index = idx;
+
+    if (goalCells.has(idx)) {
+      div.classList.add("goal-cell");
+    }
 
     if (cell.free) {
       div.classList.add("free", "marked");
@@ -132,6 +150,11 @@ function toggleCell(idx) {
 
   savePlayerData();
   checkForWin();
+}
+
+function toggleFocusGoal(on) {
+  var grid = document.getElementById("bingo-grid");
+  grid.classList.toggle("focus-goal", on);
 }
 
 function checkForWin() {
