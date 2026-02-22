@@ -5,11 +5,24 @@ A serverless, browser-based bingo game that uses pictures instead of numbers. De
 ## How It Works
 
 1. **Host** creates a game at `host.html`, picks a theme and win pattern, then shares the generated link
-2. **Players** open the link, enter their name, and get a unique bingo card (deterministically generated via seeded PRNG)
+2. **Players** open the link, enter their name, and get a random bingo card with a unique card code (e.g. `#AB3X`)
 3. Host draws items one at a time; players mark matching cells on their cards
 4. When a player's marked cells match the win pattern, they get a BINGO
+5. **Verification**: the player shares their card code with the host, who enters it to regenerate and verify the card
 
-All card generation is deterministic — the same game code + player name always produces the same card, so no server synchronization is needed.
+Cards are randomly generated each time a player joins. A 4-character card seed is stored in localStorage so refreshing the page keeps the same card.
+
+## Themes
+
+Five built-in themes are available:
+
+- **Default** — generic icons (auto-generated SVG placeholders)
+- **Biscuit Neopets** (50 pets)
+- **Candy Neopets** (49 pets)
+- **Green Neopets** (55 pets)
+- **Woodland Neopets** (55 pets)
+
+Theme data is stored as JSON files in `themes/`. The theme preview page (`themes.html`) lets you browse all themes and pre-cache images before starting a game.
 
 ## Running Locally
 
@@ -19,15 +32,16 @@ Serve the project with any static file server:
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000/host.html` to host or `http://localhost:8000/play.html?game=CODE&theme=placeholder` to play.
+Then open `http://localhost:8000` to get started. Theme JSON files are fetched over HTTP, so opening the HTML files directly via `file://` will not work.
 
 ## Project Structure
 
 ```
 bingo/
-  index.html          Landing page (host or join)
+  index.html          Landing page
   host.html           Host game creation & draw interface
   play.html           Player bingo card
+  themes.html         Theme browser & image pre-caching
   css/
     style.css          Shared base styles & variables
     host.css           Host page styles
@@ -36,12 +50,16 @@ bingo/
     prng.js            Seeded PRNG (cyrb53 hash + mulberry32)
     theme.js           Theme registry & placeholder SVG generation
     game.js            Game code generation & URL helpers
-    card.js            Deterministic card generation
+    card.js            Random card seed generation & card building
     win.js             Win pattern registry & detection
     host.js            Host page controller
     player.js          Player page controller
   themes/
-    placeholder.json   Default "Party Mix" theme data
+    default.json       Default theme (SVG placeholders)
+    biscuitneopets.json
+    candyneopets.json
+    greenneopets.json
+    woodlandneopets.json
 ```
 
 ## Win Patterns
@@ -54,5 +72,6 @@ Hosts can also draw a **Custom** pattern on an interactive 5x5 grid. Custom patt
 
 - Vanilla HTML/CSS/JavaScript, no frameworks or build step
 - CSS custom properties for theming (dark theme by default)
-- `sessionStorage` for host state, `localStorage` for player marks
-- Seeded PRNG for deterministic card shuffling
+- `sessionStorage` for host state, `localStorage` for player card seeds & marks
+- Seeded PRNG for deterministic card generation from card seeds
+- Neopets theme images hosted on Imgur (HTTPS)

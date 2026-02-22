@@ -10,44 +10,11 @@ var PALETTE = [
 // Manifest + inline fallback items for built-in themes.
 // When served via HTTP, loadTheme() fetches themes/<id>.json instead.
 var THEMES = [
-  {
-    id: "placeholder",
-    title: "Clraik Users",
-    items: [
-      { name: "Balloon", image: "auto" },
-      { name: "Cake", image: "auto" },
-      { name: "Star", image: "auto" },
-      { name: "Heart", image: "auto" },
-      { name: "Gift", image: "auto" },
-      { name: "Crown", image: "auto" },
-      { name: "Rainbow", image: "auto" },
-      { name: "Diamond", image: "auto" },
-      { name: "Moon", image: "auto" },
-      { name: "Sun", image: "auto" },
-      { name: "Cloud", image: "auto" },
-      { name: "Flower", image: "auto" },
-      { name: "Tree", image: "auto" },
-      { name: "Fish", image: "auto" },
-      { name: "Bird", image: "auto" },
-      { name: "Cat", image: "auto" },
-      { name: "Dog", image: "auto" },
-      { name: "Rocket", image: "auto" },
-      { name: "Planet", image: "auto" },
-      { name: "Music", image: "auto" },
-      { name: "Bell", image: "auto" },
-      { name: "Key", image: "auto" },
-      { name: "Anchor", image: "auto" },
-      { name: "Lightning", image: "auto" },
-      { name: "Flame", image: "auto" },
-      { name: "Snowflake", image: "auto" },
-      { name: "Dice", image: "auto" },
-      { name: "Cherry", image: "auto" },
-      { name: "Pizza", image: "auto" },
-      { name: "Candy", image: "auto" },
-      { name: "Gem", image: "auto" },
-      { name: "Trophy", image: "auto" },
-    ],
-  },
+  { id: "default", title: "Default", items: [] },
+  { id: "biscuitneopets", title: "Biscuit Neopets", items: [] },
+  { id: "candyneopets", title: "Candy Neopets", items: [] },
+  { id: "greenneopets", title: "Green Neopets", items: [] },
+  { id: "woodlandneopets", title: "Woodland Neopets", items: [] },
 ];
 
 function getThemeList() {
@@ -107,7 +74,7 @@ function loadTheme(themeId) {
     .then(processThemeData)
     .catch(function() {
       // fetch fails on file:// protocol — use inline fallback
-      if (fallback && fallback.items) return processThemeData(fallback);
-      throw new Error("Theme not found: " + themeId);
+      if (fallback && fallback.items && fallback.items.length > 0) return processThemeData(fallback);
+      throw new Error("Theme not found: " + themeId + ". Are you using a local server?");
     });
 }

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Picture Bingo — Themes</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .theme-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .theme-picker button {
+      font-size: 0.9rem;
+      padding: 0.5em 1em;
+    }
+    .theme-picker button.active {
+      background: var(--accent);
+      color: #fff;
+    }
+    .status {
+      text-align: center;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+    .status .count {
+      color: var(--success);
+      font-weight: 600;
+    }
+    .status .error {
+      color: var(--danger);
+      font-weight: 600;
+    }
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+    .image-item {
+      text-align: center;
+    }
+    .image-item img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: contain;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: border-color 0.2s;
+    }
+    .image-item img.loaded {
+      border-color: var(--success);
+    }
+    .image-item img.failed {
+      border-color: var(--danger);
+    }
+    .image-item span {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="page-title"><a href="index.html">Picture Bingo</a> Themes</h1>
+
+    <div class="theme-picker" id="theme-picker"></div>
+    <div class="status" id="status"></div>
+    <div class="image-grid" id="image-grid"></div>
+  </div>
+
+  <script src="js/prng.js"></script>
+  <script src="js/theme.js"></script>
+  <script>
+    var pickerEl = document.getElementById("theme-picker");
+    var statusEl = document.getElementById("status");
+    var gridEl = document.getElementById("image-grid");
+    var currentTheme = null;
+
+    var themes = getThemeList();
+    themes.forEach(function(t) {
+      var btn = document.createElement("button");
+      btn.className = "btn-secondary";
+      btn.textContent = t.title;
+      btn.dataset.id = t.id;
+      btn.onclick = function() { selectTheme(t.id); };
+      pickerEl.appendChild(btn);
+    });
+
+    function selectTheme(id) {
+      currentTheme = id;
+
+      // Update active button
+      var btns = pickerEl.querySelectorAll("button");
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].className = btns[i].dataset.id === id ? "btn-primary active" : "btn-secondary";
+      }
+
+      statusEl.textContent = "Loading...";
+      gridEl.innerHTML = "";
+
+      loadTheme(id).then(function(theme) {
+        if (currentTheme !== id) return;
+        renderTheme(theme);
+      }).catch(function(err) {
+        statusEl.innerHTML = '<span class="error">' + err.message + '</span>';
+      });
+    }
+
+    function renderTheme(theme) {
+      gridEl.innerHTML = "";
+      var total = theme.items.length;
+      var loadedCount = 0;
+      var failedCount = 0;
+
+      function updateStatus() {
+        var parts = [];
+        parts.push('<span class="count">' + loadedCount + '</span> / ' + total + ' loaded');
+        if (failedCount > 0) {
+          parts.push('<span class="error">' + failedCount + ' failed</span>');
+        }
+        if (loadedCount + failedCount < total) {
+          parts.push('⏳');
+        }
+        statusEl.innerHTML = parts.join(' · ');
+      }
+
+      updateStatus();
+
+      theme.items.forEach(function(item) {
+        var div = document.createElement("div");
+        div.className = "image-item";
+
+        var img = document.createElement("img");
+        img.src = item.image;
+        img.alt = item.name;
+        img.onload = function() {
+          loadedCount++;
+          img.classList.add("loaded");
+          updateStatus();
+        };
+        img.onerror = function() {
+          failedCount++;
+          img.classList.add("failed");
+          updateStatus();
+        };
+
+        var span = document.createElement("span");
+        span.textContent = item.name;
+
+        div.appendChild(img);
+        div.appendChild(span);
+        gridEl.appendChild(div);
+      });
+    }
+
+    // Auto-select first theme
+    if (themes.length > 0) {
+      selectTheme(themes[0].id);
+    }
+  </script>
+</body>
+</html>

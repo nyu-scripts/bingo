@@ -1,6 +1,6 @@
 {
-  "id": "placeholder",
-  "title": "Clraik Users",
+  "id": "default",
+  "title": "Default",
   "items": [
     { "name": "Balloon", "image": "auto" },
     { "name": "Cake", "image": "auto" },

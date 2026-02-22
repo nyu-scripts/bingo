@@ -40,7 +40,7 @@ function enterGame(e) {
 
   playerState.playerName = name;
   playerState.gameCode = getParam("game");
-  playerState.themeId = getParam("theme") || "placeholder";
+  playerState.themeId = getParam("theme") || "default";
   playerState.patternId = getParam("pattern") || "line";
 
   if (!playerState.gameCode) {

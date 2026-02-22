@@ -291,6 +291,10 @@ function populateThemeSelect() {
     opt.value = t.id;
     opt.textContent = t.title;
     select.appendChild(opt);
+    // Load theme to show item count
+    loadTheme(t.id).then(function(theme) {
+      opt.textContent = t.title + " (" + theme.items.length + ")";
+    });
   });
 }
 
