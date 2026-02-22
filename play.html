@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Play - Picture Bingo</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/player.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="page-title"><a href="index.html">Picture Bingo</a></h1>
+
+    <!-- Name entry (shown first) -->
+    <div id="name-section" class="card-box">
+      <div class="field-group">
+        <label for="player-name">Your Name</label>
+      </div>
+      <form class="name-form" onsubmit="enterGame(event)">
+        <input type="text" id="player-name" placeholder="Enter your name" required
+               autocomplete="off" maxlength="30">
+        <button type="submit" class="btn-primary">Play</button>
+      </form>
+    </div>
+
+    <!-- Game area (shown after name entry) -->
+    <div id="game-area" style="display:none">
+      <div class="player-info">
+        <span class="player-name" id="display-name"></span>
+        <div class="game-ref">Game: <span id="display-code"></span></div>
+        <div class="card-seed">Card #<span id="display-seed"></span></div>
+      </div>
+
+      <div class="win-banner" id="win-banner">
+        <h2>BINGO!</h2>
+        <div class="win-patterns" id="win-patterns"></div>
+      </div>
+
+      <div class="goal-indicator" id="goal-indicator"></div>
+
+      <div class="bingo-grid" id="bingo-grid"></div>
+    </div>
+  </div>
+
+  <script src="js/prng.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/card.js"></script>
+  <script src="js/win.js"></script>
+  <script src="js/player.js"></script>
+</body>
+</html>

@@ -1,0 +1,348 @@
+/* Host-specific styles */
+
+.host-container {
+  max-width: 720px;
+}
+
+.setup-section,
+.game-section {
+  margin-bottom: 1.5rem;
+}
+
+.share-bar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.share-bar .share-link {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.85rem;
+  background: var(--bg);
+  padding: 0.5em 0.8em;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.game-code {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  text-align: center;
+  margin: 0.5rem 0;
+  font-family: "Courier New", monospace;
+}
+
+.draw-area {
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.current-draw {
+  margin: 1rem auto;
+  width: 160px;
+  height: 160px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 3px solid var(--accent);
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.current-draw img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.current-draw .draw-placeholder {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.current-draw-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+}
+
+.draw-counter {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-top: 0.3rem;
+}
+
+.history-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 6px;
+}
+
+.history-item {
+  text-align: center;
+}
+
+.history-item img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.history-item .history-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-draw {
+  font-size: 1.1rem;
+  padding: 0.7em 2em;
+}
+
+/* Pattern picker */
+.pattern-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 8px;
+}
+
+.pattern-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.pattern-card:hover {
+  border-color: var(--accent);
+}
+
+.pattern-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.pattern-card .pattern-name {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-align: center;
+  line-height: 1.2;
+}
+
+.pattern-card.selected .pattern-name {
+  color: var(--text);
+}
+
+.game-pattern-info {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.game-pattern-info .pattern-label {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.game-pattern-info .pattern-value {
+  font-weight: 700;
+}
+
+/* Custom grid builder */
+.custom-grid-builder {
+  margin-bottom: 1rem;
+}
+
+.custom-grid-builder label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.custom-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 28px);
+  grid-template-rows: repeat(5, 28px);
+  gap: 2px;
+  justify-content: center;
+}
+
+.custom-grid .on,
+.custom-grid .off {
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.custom-grid .on {
+  background: var(--accent);
+}
+
+.custom-grid .off {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+}
+
+.custom-grid .off:hover {
+  background: var(--border);
+}
+
+/* Verify BINGO */
+.verify-section {
+  margin-top: 1rem;
+}
+
+.verify-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.verify-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.verify-input-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5em 0.8em;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.verify-input-row input::placeholder {
+  color: var(--text-dim);
+}
+
+.verify-message {
+  font-weight: 700;
+  text-align: center;
+  padding: 0.5em;
+  border-radius: var(--radius-sm);
+  margin-top: 0.75rem;
+}
+
+.verify-message.pass {
+  color: var(--success);
+  background: rgba(46, 204, 113, 0.1);
+}
+
+.verify-message.fail {
+  color: var(--danger);
+  background: rgba(231, 76, 60, 0.1);
+}
+
+.verify-player-name {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  margin-top: 0.5rem;
+}
+
+.verify-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+  margin-top: 0.5rem;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.verify-grid > div {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.verify-grid > div span {
+  font-size: 0.55rem;
+  text-align: center;
+  line-height: 1.2;
+  padding: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.verify-grid > div img {
+  width: 100%;
+  height: 70%;
+  object-fit: cover;
+}
+
+.verify-grid .drawn {
+  background: var(--accent);
+  color: #fff;
+}
+
+.verify-grid .not-drawn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+.verify-grid .win-cell {
+  outline: 2px solid var(--success);
+  outline-offset: -2px;
+  box-shadow: 0 0 6px rgba(46, 204, 113, 0.5);
+}
+
+@media (max-width: 480px) {
+  .current-draw {
+    width: 130px;
+    height: 130px;
+  }
+
+  .history-grid {
+    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+  }
+
+  .pattern-picker {
+    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+  }
+}

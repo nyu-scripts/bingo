@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Host - Picture Bingo</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/host.css">
+</head>
+<body>
+  <div class="container host-container">
+    <h1 class="page-title"><a href="index.html">Picture Bingo</a> &mdash; Host</h1>
+
+    <!-- Setup (shown before game is created) -->
+    <div id="setup" class="card-box setup-section">
+      <div class="field-group">
+        <label for="theme-select">Theme</label>
+        <select id="theme-select"></select>
+      </div>
+
+      <div class="field-group">
+        <label>Win Pattern</label>
+        <div class="pattern-picker" id="pattern-picker"></div>
+      </div>
+
+      <div id="custom-grid-builder" class="custom-grid-builder" style="display:none">
+        <label>Draw your pattern</label>
+        <div class="custom-grid" id="custom-grid"></div>
+      </div>
+
+      <button class="btn-primary" id="btn-create" onclick="createGame()">Create Game</button>
+    </div>
+
+    <!-- Game panel (shown after creation) -->
+    <div id="game-panel" class="game-section" style="display:none">
+      <div class="card-box">
+        <div class="game-code" id="display-code"></div>
+        <div class="share-bar">
+          <span class="share-link" id="share-link"></span>
+          <button class="btn-secondary" id="btn-copy" onclick="copyLink()">Copy Link</button>
+        </div>
+      </div>
+
+      <div class="game-pattern-info" id="game-pattern-info"></div>
+
+      <div class="draw-area">
+        <button class="btn-primary btn-draw" id="btn-draw" onclick="drawNext()">Draw Next</button>
+        <div class="current-draw" id="current-draw">
+          <span class="draw-placeholder">No image drawn yet</span>
+        </div>
+        <div class="current-draw-name" id="current-name"></div>
+        <div class="draw-counter" id="draw-counter"></div>
+      </div>
+
+      <div class="card-box">
+        <div class="history-title">History</div>
+        <div class="history-grid" id="history-grid"></div>
+      </div>
+
+      <div class="card-box verify-section">
+        <div class="verify-title">Verify BINGO</div>
+        <div class="verify-input-row">
+          <input type="text" id="verify-seed" placeholder="Card code" autocomplete="off">
+          <button class="btn-primary" onclick="verifyBingo()">Verify</button>
+        </div>
+        <div id="verify-result"></div>
+      </div>
+
+      <div style="text-align:center; margin-top:1rem;">
+        <button class="btn-secondary" onclick="resetGame()">New Game</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/prng.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/card.js"></script>
+  <script src="js/win.js"></script>
+  <script src="js/host.js"></script>
+</body>
+</html>
