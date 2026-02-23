@@ -32,6 +32,31 @@ const WIN_PATTERNS = (() => {
       // Preview: show an X pattern to hint "lines"
       grid: gridFrom([...diag1, ...diag2]),
     },
+
+    {
+      id: "heart",
+      name: "Heart",
+      sets: [[0, 1, 3, 4, 5, 7, 9, 10, 14, 16, 18, 22]],
+      grid: gridFrom([0, 1, 3, 4, 5, 7, 9, 10, 14, 16, 18, 22]),
+    },
+    {
+      id: "fullheart",
+      name: "Full Heart",
+      sets: [[1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,, 16, 17, 18, 22]],
+      grid: gridFrom([1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 22]),
+    },
+    {
+      id: "diamond",
+      name: "Diamond",
+      sets: [[2, 6, 7, 8, 10, 11, 12, 13, 14, 16, 17, 18, 22]],
+      grid: gridFrom([2, 6, 7, 8, 10, 11, 12, 13, 14, 16, 17, 18, 22]),
+    },
+    {
+      id: "butterfly",
+      name: "Butterfly",
+      sets: [[0, 4, 5, 6, 8, 9, 10, 12, 14, 15, 16, 18, 19, 20, 24]],
+      grid: gridFrom([0, 4, 5, 6, 8, 9, 10, 12, 14, 15, 16, 18, 19, 20, 24]),
+    },
     {
       id: "corners",
       name: "Four Corners",
@@ -51,22 +76,16 @@ const WIN_PATTERNS = (() => {
       grid: gridFrom([...new Set([...rows[2], ...cols[2]])]),
     },
     {
-      id: "diamond",
-      name: "Diamond",
-      sets: [[2, 6, 7, 8, 10, 11, 12, 13, 14, 16, 17, 18, 22]],
-      grid: gridFrom([2, 6, 7, 8, 10, 11, 12, 13, 14, 16, 17, 18, 22]),
-    },
-    {
-      id: "heart",
-      name: "Heart",
-      sets: [[1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 22]],
-      grid: gridFrom([1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 22]),
-    },
-    {
       id: "frame",
       name: "Frame",
       sets: [[0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24]],
       grid: gridFrom([0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24]),
+    },
+    {
+      id: "square",
+      name: "Square",
+      sets: [[6, 7, 8, 11, 13, 16, 17, 18]],
+      grid: gridFrom([6, 7, 8, 11, 13, 16, 17, 18]),
     },
     {
       id: "arrow",
@@ -81,16 +100,70 @@ const WIN_PATTERNS = (() => {
       grid: gridFrom([0, 1, 5, 6]),
     },
     {
-      id: "letter-t",
-      name: "Letter T",
-      sets: [[...new Set([...rows[0], ...cols[2]])]],
-      grid: gridFrom([...new Set([...rows[0], ...cols[2]])]),
+      id: "letter-c",
+      name: "Letter C",
+      sets: [[1, 2, 3, 4, 5, 10, 15, 21, 22, 23, 24]],
+      grid: gridFrom([1, 2, 3, 4, 5, 10, 15, 21, 22, 23, 24]),
     },
     {
       id: "letter-l",
       name: "Letter L",
       sets: [[...new Set([...cols[0], ...rows[4]])]],
       grid: gridFrom([...new Set([...cols[0], ...rows[4]])]),
+    },
+    {
+      id: "letter-r",
+      name: "Letter R",
+      sets: [[0, 1, 2, 3, 5, 9, 10, 11, 12, 13, 15, 19, 20, 24]],
+      grid: gridFrom([0, 1, 2, 3, 5, 9, 10, 11, 12, 13, 15, 19, 20, 24]),
+    },
+    {
+      id: "letter-a",
+      name: "Letter A",
+      sets: [[1, 2, 3, 5, 9, 10, 11, 12, 13, 14, 15, 19, 20, 24]],
+      grid: gridFrom([1, 2, 3, 5, 9, 10, 11, 12, 13, 14, 15, 19, 20, 24]),
+    },
+    {
+      id: "letter-i",
+      name: "Letter I",
+      sets: [[1, 2, 3, 7, 12, 17, 21, 22, 23]],
+      grid: gridFrom([1, 2, 3, 7, 12, 17, 21, 22, 23]),
+    },
+    {
+      id: "letter-k",
+      name: "Letter K",
+      sets: [[0, 4, 5, 8, 10, 11, 12, 15, 18, 20, 24]],
+      grid: gridFrom([0, 4, 5, 8, 10, 11, 12, 15, 18, 20, 24]),
+    },
+    {
+      id: "clraik",
+      name: "cK",
+      sets: [[0, 1, 2, 5, 10, 11, 12, 14, 17, 18, 22, 24]],
+      grid: gridFrom([0, 1, 2, 5, 10, 11, 12, 14, 17, 18, 22, 24]),
+    },
+    {
+      id: "hightlight",
+      name: "Highlight",
+      sets: [[0, 1, 5, 19, 23, 24]],
+      grid: gridFrom([0, 1, 5, 19, 23, 24]),
+    },
+    {
+      id: "clover",
+      name: "Four Leaf Clover",
+      sets: [[0, 1, 3, 4, 5, 6, 8, 9, 12, 15, 16, 18, 19, 20, 21, 23, 24]],
+      grid: gridFrom([0, 1, 3, 4, 5, 6, 8, 9, 12, 15, 16, 18, 19, 20, 21, 23, 24]),
+    },
+    {
+      id: "plaid",
+      name: "Plaid",
+      sets: [[0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24]],
+      grid: gridFrom([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24]),
+    },
+    {
+      id: "stairs",
+      name: "Stairs",
+      sets: [[4, 8, 9, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24]],
+      grid: gridFrom([4, 8, 9, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24]),
     },
     {
       id: "blackout",
