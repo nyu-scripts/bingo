@@ -47,6 +47,7 @@ function createGame() {
 
   hostState.gameCode = gameCode;
   hostState.themeId = themeId;
+  localStorage.setItem("bingo_last_theme", themeId);
   // Encode custom grid into pattern ID if custom is selected
   if (hostState.patternId === "custom") {
     hostState.patternId = encodeCustomPattern(hostState.customGrid);
@@ -296,10 +297,12 @@ function renderVerifyGrid(cells, marked, winCells, goalCells) {
 function populateThemeSelect() {
   var select = document.getElementById("theme-select");
   select.innerHTML = "";
+  var lastTheme = localStorage.getItem("bingo_last_theme");
   getThemeList().forEach(function(t) {
     var opt = document.createElement("option");
     opt.value = t.id;
     opt.textContent = t.title;
+    if (t.id === lastTheme) opt.selected = true;
     select.appendChild(opt);
     // Load theme to show item count
     loadTheme(t.id).then(function(theme) {
