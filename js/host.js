@@ -8,16 +8,23 @@ var hostState = {
   drawn: [],       // indices into theme.items that have been drawn
   pool: [],        // indices not yet drawn
   customGrid: Array(25).fill(0),
+  customItems: null, // base64url-encoded custom item names
+  urlItems: null,    // base64url-encoded URL scrape item suffixes
+  urlPrefix: null,   // common image URL prefix
 };
 
 function saveHostState() {
-  sessionStorage.setItem("bingo_host", JSON.stringify({
+  var data = {
     gameCode: hostState.gameCode,
     themeId: hostState.themeId,
     patternId: hostState.patternId,
     drawn: hostState.drawn,
     pool: hostState.pool,
-  }));
+  };
+  if (hostState.customItems) data.customItems = hostState.customItems;
+  if (hostState.urlItems) data.urlItems = hostState.urlItems;
+  if (hostState.urlPrefix) data.urlPrefix = hostState.urlPrefix;
+  sessionStorage.setItem("bingo_host", JSON.stringify(data));
 }
 
 function restoreHostState() {
@@ -35,15 +42,56 @@ function restoreHostState() {
   hostState.patternId = data.patternId || "line";
   hostState.drawn = data.drawn;
   hostState.pool = data.pool;
-  return loadTheme(data.themeId).then(function(theme) {
+  hostState.customItems = data.customItems || null;
+  hostState.urlItems = data.urlItems || null;
+  hostState.urlPrefix = data.urlPrefix || null;
+  return loadTheme(data.themeId, hostState.customItems, {
+    items: hostState.urlItems, prefix: hostState.urlPrefix
+  }).then(function(theme) {
     hostState.theme = theme;
     return true;
   });
 }
 
+function parseCustomItemNames(raw) {
+  var seen = {};
+  return raw.split("\n")
+    .map(function(line) { return line.trim().replace(/\|/g, "").substring(0, 40); })
+    .filter(function(line) { return line.length > 0; })
+    .filter(function(line) {
+      var key = line.toLowerCase();
+      if (seen[key]) return false;
+      seen[key] = true;
+      return true;
+    });
+}
+
 function createGame() {
   var themeId = document.getElementById("theme-select").value;
   var gameCode = generateGameCode();
+
+  // Handle custom text theme
+  if (themeId === "custom") {
+    var raw = document.getElementById("custom-items-textarea").value;
+    var names = parseCustomItemNames(raw);
+    if (names.length < 24) {
+      alert("Please enter at least 24 unique items (you have " + names.length + ").");
+      return;
+    }
+    hostState.customItems = encodeCustomItems(names);
+    hostState.urlItems = null;
+    hostState.urlPrefix = null;
+  } else if (themeId === "urlscrape") {
+    if (!hostState.urlItems) {
+      alert("Please fetch images from a URL first.");
+      return;
+    }
+    hostState.customItems = null;
+  } else {
+    hostState.customItems = null;
+    hostState.urlItems = null;
+    hostState.urlPrefix = null;
+  }
 
   hostState.gameCode = gameCode;
   hostState.themeId = themeId;
@@ -53,7 +101,9 @@ function createGame() {
     hostState.patternId = encodeCustomPattern(hostState.customGrid);
   }
 
-  return loadTheme(themeId).then(function(theme) {
+  return loadTheme(themeId, hostState.customItems, {
+    items: hostState.urlItems, prefix: hostState.urlPrefix
+  }).then(function(theme) {
     hostState.theme = theme;
     hostState.drawn = [];
     hostState.pool = hostState.theme.items.map(function(_, i) { return i; });
@@ -69,7 +119,7 @@ function createGame() {
     saveHostState();
 
     // Update URL without reload
-    var url = buildHostUrl(gameCode, themeId, hostState.patternId);
+    var url = buildHostUrl(gameCode, themeId, hostState.patternId, hostState.customItems, hostState.urlItems, hostState.urlPrefix);
     history.replaceState(null, "", url);
 
     showGamePanel();
@@ -81,7 +131,7 @@ function showGamePanel() {
   document.getElementById("game-panel").style.display = "block";
 
   document.getElementById("display-code").textContent = hostState.gameCode;
-  var playUrl = buildPlayUrl(hostState.gameCode, hostState.themeId, hostState.patternId);
+  var playUrl = buildPlayUrl(hostState.gameCode, hostState.themeId, hostState.patternId, hostState.customItems, hostState.urlItems, hostState.urlPrefix);
   document.getElementById("share-link").textContent = playUrl;
 
   // Show current pattern
@@ -147,7 +197,7 @@ function renderHistory() {
 }
 
 function copyLink() {
-  var url = buildPlayUrl(hostState.gameCode, hostState.themeId, hostState.patternId);
+  var url = buildPlayUrl(hostState.gameCode, hostState.themeId, hostState.patternId, hostState.customItems, hostState.urlItems, hostState.urlPrefix);
   copyToClipboard(url, document.getElementById("btn-copy"));
 }
 
@@ -294,6 +344,135 @@ function renderVerifyGrid(cells, marked, winCells, goalCells) {
   return html;
 }
 
+function parseImagesFromHtml(html, prefix) {
+  var doc = new DOMParser().parseFromString(html, "text/html");
+  var imgs = doc.querySelectorAll("img");
+  var seen = {};
+  var results = [];
+  for (var i = 0; i < imgs.length; i++) {
+    var src = imgs[i].getAttribute("src");
+    if (!src) continue;
+    if (prefix && src.indexOf(prefix) !== 0) continue;
+    if (seen[src]) continue;
+    seen[src] = true;
+    var alt = imgs[i].getAttribute("alt");
+    var name = (alt && alt.trim()) ? alt.trim() : nameFromUrl(src);
+    results.push({ name: name.substring(0, 40), image: src });
+  }
+  return results;
+}
+
+function ensureUniqueNames(items) {
+  var counts = {};
+  var result = [];
+  for (var i = 0; i < items.length; i++) {
+    var base = items[i].name;
+    var key = base.toLowerCase();
+    if (counts[key] === undefined) {
+      counts[key] = 0;
+    }
+    counts[key]++;
+    result.push({ name: base, image: items[i].image, _key: key });
+  }
+  // Second pass: append suffix to duplicates
+  var seen = {};
+  for (var j = 0; j < result.length; j++) {
+    var k = result[j]._key;
+    if (counts[k] > 1) {
+      if (seen[k] === undefined) seen[k] = 0;
+      seen[k]++;
+      result[j].name = result[j].name + " " + seen[k];
+    }
+    delete result[j]._key;
+  }
+  return result;
+}
+
+function fetchUrlScrape() {
+  var urlInput = document.getElementById("scrape-url");
+  var url = urlInput.value.trim();
+  if (!url) { urlInput.focus(); return; }
+
+  var prefix = document.getElementById("scrape-prefix").value.trim();
+  var status = document.getElementById("scrape-status");
+  var fallback = document.getElementById("scrape-fallback");
+
+  status.textContent = "Fetching...";
+  status.className = "scrape-status";
+  fallback.style.display = "none";
+
+  fetch(url)
+    .then(function(res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.text();
+    })
+    .then(function(html) {
+      var items = parseImagesFromHtml(html, prefix);
+      items = ensureUniqueNames(items);
+      if (items.length === 0) {
+        status.textContent = "No images found" + (prefix ? " matching that prefix." : ".");
+        status.className = "scrape-status error";
+        return;
+      }
+      displayScrapedItems(items);
+    })
+    .catch(function() {
+      status.textContent = "Could not fetch URL (likely CORS). Paste the page HTML source below instead.";
+      status.className = "scrape-status error";
+      fallback.style.display = "";
+    });
+}
+
+function parsePastedHtml() {
+  var html = document.getElementById("scrape-paste-html").value;
+  if (!html.trim()) return;
+
+  var prefix = document.getElementById("scrape-prefix").value.trim();
+  var status = document.getElementById("scrape-status");
+
+  var items = parseImagesFromHtml(html, prefix);
+  items = ensureUniqueNames(items);
+  if (items.length === 0) {
+    status.textContent = "No images found in pasted HTML" + (prefix ? " matching that prefix." : ".");
+    status.className = "scrape-status error";
+    return;
+  }
+  displayScrapedItems(items);
+}
+
+function commonUrlPrefix(urls) {
+  if (urls.length === 0) return "";
+  var prefix = urls[0];
+  for (var i = 1; i < urls.length; i++) {
+    while (urls[i].indexOf(prefix) !== 0) {
+      prefix = prefix.substring(0, prefix.length - 1);
+      if (!prefix) return "";
+    }
+  }
+  var lastSlash = prefix.lastIndexOf("/");
+  return lastSlash >= 0 ? prefix.substring(0, lastSlash + 1) : "";
+}
+
+function displayScrapedItems(items) {
+  var status = document.getElementById("scrape-status");
+  status.textContent = items.length + " image" + (items.length !== 1 ? "s" : "") + " found" + (items.length < 24 ? " (need at least 24)" : "");
+  status.className = "scrape-status" + (items.length >= 24 ? " success" : " error");
+
+  var prefix = commonUrlPrefix(items.map(function(it) { return it.image; }));
+  hostState.urlPrefix = prefix;
+  hostState.urlItems = encodeUrlItems(items, prefix);
+
+  var preview = document.getElementById("scrape-preview");
+  preview.innerHTML = "";
+  for (var i = 0; i < items.length; i++) {
+    var div = document.createElement("div");
+    div.className = "scrape-preview-item";
+    div.innerHTML = '<img src="' + items[i].image + '" alt="' + escapeXml(items[i].name) + '">' +
+      '<span>' + escapeXml(items[i].name) + '</span>';
+    preview.appendChild(div);
+  }
+}
+
 function populateThemeSelect() {
   var select = document.getElementById("theme-select");
   select.innerHTML = "";
@@ -309,6 +488,39 @@ function populateThemeSelect() {
       opt.textContent = t.title + " (" + theme.items.length + ")";
     });
   });
+
+  // Add Custom (Text) option
+  var customOpt = document.createElement("option");
+  customOpt.value = "custom";
+  customOpt.textContent = "Custom (Text)";
+  if (lastTheme === "custom") customOpt.selected = true;
+  select.appendChild(customOpt);
+
+  // Add Custom (Images) option
+  var urlOpt = document.createElement("option");
+  urlOpt.value = "urlscrape";
+  urlOpt.textContent = "Custom (Images)";
+  if (lastTheme === "urlscrape") urlOpt.selected = true;
+  select.appendChild(urlOpt);
+
+  // Show/hide custom builders
+  var builder = document.getElementById("custom-items-builder");
+  var urlBuilder = document.getElementById("url-scrape-builder");
+  function updateBuilderVisibility() {
+    builder.style.display = select.value === "custom" ? "" : "none";
+    urlBuilder.style.display = select.value === "urlscrape" ? "" : "none";
+  }
+  updateBuilderVisibility();
+  select.addEventListener("change", updateBuilderVisibility);
+
+  // Live item counter
+  var textarea = document.getElementById("custom-items-textarea");
+  var counter = document.getElementById("custom-items-counter");
+  textarea.addEventListener("input", function() {
+    var names = parseCustomItemNames(textarea.value);
+    counter.textContent = names.length + " item" + (names.length !== 1 ? "s" : "");
+    counter.className = "custom-items-counter" + (names.length < 24 ? " insufficient" : "");
+  });
 }
 
 // Init
@@ -316,6 +528,9 @@ function populateThemeSelect() {
   var urlGame = getParam("game");
   var urlTheme = getParam("theme");
   var urlPattern = getParam("pattern");
+  var urlCitems = getParam("citems");
+  var urlUitems = getParam("uitems");
+  var urlUprefix = getParam("uprefix");
 
   if (urlPattern) {
     hostState.patternId = urlPattern;
@@ -323,6 +538,16 @@ function populateThemeSelect() {
       var decoded = decodeCustomPattern(urlPattern);
       hostState.customGrid = decoded.grid;
     }
+  }
+
+  if (urlCitems) {
+    hostState.customItems = urlCitems;
+  }
+  if (urlUitems) {
+    hostState.urlItems = urlUitems;
+  }
+  if (urlUprefix) {
+    hostState.urlPrefix = urlUprefix;
   }
 
   populateThemeSelect();
@@ -335,8 +560,13 @@ function populateThemeSelect() {
       hostState.gameCode = urlGame;
       hostState.themeId = urlTheme;
       hostState.patternId = urlPattern || "line";
+      if (urlCitems) hostState.customItems = urlCitems;
+      if (urlUitems) hostState.urlItems = urlUitems;
+      if (urlUprefix) hostState.urlPrefix = urlUprefix;
 
-      loadTheme(urlTheme).then(function(theme) {
+      loadTheme(urlTheme, hostState.customItems, {
+        items: hostState.urlItems, prefix: hostState.urlPrefix
+      }).then(function(theme) {
         hostState.theme = theme;
         hostState.drawn = [];
         hostState.pool = hostState.theme.items.map(function(_, i) { return i; });

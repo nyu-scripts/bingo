@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tests - Picture Bingo</title>
+  <style>
+    body { font-family: monospace; background: #1a1a2e; color: #eee; padding: 2rem; }
+    h1 { margin-bottom: 1rem; }
+    .pass { color: #2ecc71; }
+    .fail { color: #e74c3c; font-weight: bold; }
+    .group { color: #f1c40f; margin-top: 1.5rem; margin-bottom: 0.25rem; font-weight: bold; }
+    .summary { margin-top: 2rem; font-size: 1.2rem; padding: 1rem; border-top: 1px solid #444; }
+    #log { line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <h1>Picture Bingo — Tests</h1>
+  <div id="log"></div>
+
+  <!-- Stub DOM elements so host.js IIFE runs without errors -->
+  <div style="display:none">
+    <select id="theme-select"></select>
+    <div id="pattern-picker"></div>
+    <div id="custom-items-builder"></div>
+    <textarea id="custom-items-textarea"></textarea>
+    <div id="custom-items-counter"></div>
+    <div id="custom-grid-builder"></div>
+    <div id="custom-grid"></div>
+    <div id="setup"></div>
+    <div id="game-panel"></div>
+    <div id="display-code"></div>
+    <div id="share-link"></div>
+    <div id="game-pattern-info"></div>
+    <div id="draw-counter"></div>
+    <div id="history-grid"></div>
+    <div id="current-draw"></div>
+    <div id="current-name"></div>
+    <input id="verify-seed">
+    <div id="verify-result"></div>
+    <button id="btn-draw"></button>
+    <button id="btn-copy"></button>
+  </div>
+
+  <script src="js/prng.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/card.js"></script>
+  <script src="js/win.js"></script>
+  <script src="js/host.js"></script>
+  <script src="js/test.js"></script>
+</body>
+</html>

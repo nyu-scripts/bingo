@@ -18,6 +18,27 @@
         <select id="theme-select"></select>
       </div>
 
+      <div id="custom-items-builder" class="custom-items-builder" style="display:none">
+        <label for="custom-items-textarea">Items (one per line, min 24)</label>
+        <textarea id="custom-items-textarea" rows="10" placeholder="Enter item names, one per line..."></textarea>
+        <div class="custom-items-counter" id="custom-items-counter">0 items</div>
+      </div>
+
+      <div id="url-scrape-builder" class="url-scrape-builder" style="display:none">
+        <label for="scrape-url">Page URL</label>
+        <input type="text" id="scrape-url" placeholder="https://example.com/gallery">
+        <label for="scrape-prefix">Image URL prefix filter (optional)</label>
+        <input type="text" id="scrape-prefix" placeholder="https://example.com/images/">
+        <button class="btn-secondary" id="btn-fetch-scrape" onclick="fetchUrlScrape()">Fetch Images</button>
+        <div class="scrape-status" id="scrape-status"></div>
+        <div id="scrape-fallback" style="display:none">
+          <label for="scrape-paste-html">Paste page HTML source</label>
+          <textarea id="scrape-paste-html" rows="8" placeholder="View page source in your browser, copy all, and paste here..."></textarea>
+          <button class="btn-secondary" onclick="parsePastedHtml()">Parse HTML</button>
+        </div>
+        <div class="scrape-preview" id="scrape-preview"></div>
+      </div>
+
       <div class="field-group">
         <label>Win Pattern</label>
         <div class="pattern-picker" id="pattern-picker"></div>

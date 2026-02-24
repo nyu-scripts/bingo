@@ -54,6 +54,10 @@ bingo/
     win.js             Win pattern registry & detection
     host.js            Host page controller
     player.js          Player page controller
+    test.js            Automated test suite
+  test.html              Browser test runner
+  test-node.js           Node.js test runner
+  test-node-cases.js     Test cases (shared with Node runner)
   themes/
     default.json       Default theme (SVG placeholders)
     biscuitneopets.json
@@ -67,6 +71,16 @@ bingo/
 12 preset patterns are available (Any Line, Four Corners, X, Plus, Diamond, Heart, Frame, Arrow, Postage Stamp, Letter T, Letter L, Blackout).
 
 Hosts can also draw a **Custom** pattern on an interactive 5x5 grid. Custom patterns are encoded as a 25-bit bitmask in base36 and embedded in the URL (e.g. `&pattern=c_abc12`), so players decode them client-side with no server needed.
+
+## Testing
+
+Open `test.html` in the browser (via local server) or run from the command line:
+
+```sh
+node test-node.js
+```
+
+The test suite covers PRNG determinism, card generation, win detection, custom pattern encode/decode, custom text theme encode/decode, and end-to-end host verification simulation.
 
 ## Tech Stack
 

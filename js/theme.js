@@ -60,7 +60,76 @@ function processThemeData(raw) {
   return { id: raw.id, title: raw.title, items: items };
 }
 
-function loadTheme(themeId) {
+function encodeCustomItems(names) {
+  var joined = names.join("|");
+  var encoded = btoa(unescape(encodeURIComponent(joined)));
+  return encoded.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function decodeCustomItems(encoded) {
+  var base64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
+  while (base64.length % 4) base64 += "=";
+  return decodeURIComponent(escape(atob(base64))).split("|");
+}
+
+function buildCustomTheme(names) {
+  var items = names.map(function(name, i) {
+    return { name: name, image: placeholderSvg(name, i) };
+  });
+  return { id: "custom", title: "Custom (Text)", items: items };
+}
+
+function nameFromUrl(url) {
+  try {
+    var path = url.split("?")[0].split("#")[0];
+    var filename = path.split("/").pop();
+    var name = filename.replace(/\.[^.]+$/, "");
+    name = name.replace(/[-_]+/g, " ").trim();
+    return name || "item";
+  } catch (e) {
+    return "item";
+  }
+}
+
+function encodeUrlItems(items, prefix) {
+  var joined = items.map(function(it) {
+    var suffix = prefix ? it.image.substring(prefix.length) : it.image;
+    return it.name + "\t" + suffix;
+  }).join("|");
+  var encoded = btoa(unescape(encodeURIComponent(joined)));
+  return encoded.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function decodeUrlItems(encoded, prefix) {
+  var base64 = encoded.replace(/-/g, "+").replace(/_/g, "/");
+  while (base64.length % 4) base64 += "=";
+  var joined = decodeURIComponent(escape(atob(base64)));
+  return joined.split("|").map(function(pair) {
+    var parts = pair.split("\t");
+    return { name: parts[0], image: (prefix || "") + (parts[1] || "") };
+  });
+}
+
+function buildUrlScrapeTheme(items) {
+  return { id: "urlscrape", title: "Custom (Images)", items: items };
+}
+
+function loadTheme(themeId, encodedItems, urlData) {
+  if (themeId === "custom") {
+    var encoded = encodedItems || getParam("citems") || sessionStorage.getItem("bingo_custom_items");
+    if (!encoded) return Promise.reject(new Error("No custom items found"));
+    var names = decodeCustomItems(encoded);
+    return Promise.resolve(buildCustomTheme(names));
+  }
+
+  if (themeId === "urlscrape") {
+    var uenc = (urlData && urlData.items) || getParam("uitems") || sessionStorage.getItem("bingo_url_items");
+    var upre = (urlData && urlData.prefix) || getParam("uprefix") || sessionStorage.getItem("bingo_url_prefix") || "";
+    if (!uenc) return Promise.reject(new Error("No URL scrape items found"));
+    var items = decodeUrlItems(uenc, upre);
+    return Promise.resolve(buildUrlScrapeTheme(items));
+  }
+
   // Find inline fallback
   var fallback = null;
   for (var i = 0; i < THEMES.length; i++) {

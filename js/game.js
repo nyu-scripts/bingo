@@ -14,17 +14,23 @@ function getParam(name) {
   return new URLSearchParams(window.location.search).get(name);
 }
 
-function buildPlayUrl(gameCode, theme, pattern) {
+function buildPlayUrl(gameCode, theme, pattern, citems, uitems, uprefix) {
   const base = window.location.href.replace(/[^/]*$/, "play.html");
   const params = new URLSearchParams({ game: gameCode, theme });
   if (pattern) params.set("pattern", pattern);
+  if (citems) params.set("citems", citems);
+  if (uitems) params.set("uitems", uitems);
+  if (uprefix) params.set("uprefix", uprefix);
   return `${base}?${params}`;
 }
 
-function buildHostUrl(gameCode, theme, pattern) {
+function buildHostUrl(gameCode, theme, pattern, citems, uitems, uprefix) {
   const base = window.location.href.replace(/[^/]*$/, "host.html");
   const params = new URLSearchParams({ game: gameCode, theme });
   if (pattern) params.set("pattern", pattern);
+  if (citems) params.set("citems", citems);
+  if (uitems) params.set("uitems", uitems);
+  if (uprefix) params.set("uprefix", uprefix);
   return `${base}?${params}`;
 }
 
