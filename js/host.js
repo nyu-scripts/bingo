@@ -189,9 +189,10 @@ function renderHistory() {
     const item = hostState.theme.items[hostState.drawn[i]];
     const div = document.createElement("div");
     div.className = "history-item";
+    const isPlaceholder = item.image && item.image.indexOf("data:image/svg+xml") === 0;
     div.innerHTML =
       '<img src="' + item.image + '" alt="' + item.name + '">' +
-      '<div class="history-label">' + item.name + '</div>';
+      (isPlaceholder ? '' : '<div class="history-label">' + item.name + '</div>');
     grid.appendChild(div);
   }
 }
@@ -335,7 +336,8 @@ function renderVerifyGrid(cells, marked, winCells, goalCells) {
     if (cells[i].free) {
       html += '<div class="' + cls + '"><span>FREE</span></div>';
     } else if (cells[i].image) {
-      html += '<div class="' + cls + '"><img src="' + cells[i].image + '" alt="' + cells[i].name + '"><span>' + cells[i].name + '</span></div>';
+      const isPlaceholder = cells[i].image.indexOf("data:image/svg+xml") === 0;
+      html += '<div class="' + cls + '"><img src="' + cells[i].image + '" alt="' + cells[i].name + '">' + (isPlaceholder ? '' : '<span>' + cells[i].name + '</span>') + '</div>';
     } else {
       html += '<div class="' + cls + '"><span>' + cells[i].name + '</span></div>';
     }

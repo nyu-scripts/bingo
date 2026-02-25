@@ -119,9 +119,10 @@ function renderCard() {
       div.classList.add("free", "marked");
       div.innerHTML = '<span class="cell-label">FREE</span>';
     } else {
+      const isPlaceholder = cell.image && cell.image.indexOf("data:image/svg+xml") === 0;
       div.innerHTML =
         '<img src="' + cell.image + '" alt="' + cell.name + '" draggable="false">' +
-        '<span class="cell-label">' + cell.name + '</span>';
+        (isPlaceholder ? '' : '<span class="cell-label">' + cell.name + '</span>');
       (function(i) {
         div.addEventListener("click", function() { toggleCell(i); });
       })(idx);

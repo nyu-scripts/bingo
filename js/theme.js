@@ -24,15 +24,46 @@ function getThemeList() {
 
 function placeholderSvg(name, index) {
   const bg = PALETTE[index % PALETTE.length];
-  const text = luma(bg) > 0.5 ? "#222" : "#fff";
+  const fill = luma(bg) > 0.5 ? "#222" : "#fff";
   const label = escapeXml(name);
+
+  // Word-wrap into lines of ~12 chars
+  const maxChars = 12;
+  const words = label.split(/\s+/);
+  const lines = [];
+  let current = "";
+  for (let i = 0; i < words.length; i++) {
+    if (current && (current.length + 1 + words[i].length) > maxChars) {
+      lines.push(current);
+      current = words[i];
+    } else {
+      current = current ? current + " " + words[i] : words[i];
+    }
+  }
+  if (current) lines.push(current);
+
+  const fontSize = lines.length <= 2 ? 14 : 12;
+  const lineHeight = fontSize * 1.35;
+  const blockHeight = (lines.length - 1) * lineHeight;
+  const startY = 60 + fontSize * 0.35 - blockHeight / 2;
+
+  let textSvg = "";
+  for (let i = 0; i < lines.length; i++) {
+    const y = startY + i * lineHeight;
+    const compress = lines[i].length > maxChars
+      ? ' textLength="110" lengthAdjust="spacingAndGlyphs"' : '';
+    textSvg +=
+      '<text x="60" y="' + y.toFixed(1) + '" text-anchor="middle" font-family="system-ui,sans-serif" ' +
+      'font-size="' + fontSize + '" font-weight="600" fill="' + fill + '"' + compress + '>' +
+      lines[i] + '</text>';
+  }
+
   return (
     "data:image/svg+xml," +
     encodeURIComponent(
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">' +
         '<rect width="120" height="120" fill="' + bg + '"/>' +
-        '<text x="60" y="66" text-anchor="middle" font-family="system-ui,sans-serif" ' +
-        'font-size="16" font-weight="600" fill="' + text + '">' + label + '</text>' +
+        textSvg +
         '</svg>'
     )
   );
