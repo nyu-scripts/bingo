@@ -1,6 +1,6 @@
 // Player page controller
 
-var playerState = {
+const playerState = {
   gameCode: null,
   themeId: null,
   patternId: null,
@@ -23,9 +23,9 @@ function savePlayerData() {
 }
 
 function loadPlayerData() {
-  var saved = localStorage.getItem(storageKey());
+  const saved = localStorage.getItem(storageKey());
   if (!saved) return null;
-  var data = JSON.parse(saved);
+  const data = JSON.parse(saved);
   // Migrate old format (plain array of marks) to new format
   if (Array.isArray(data)) {
     return { seed: null, marks: data };
@@ -35,7 +35,7 @@ function loadPlayerData() {
 
 function enterGame(e) {
   e.preventDefault();
-  var name = document.getElementById("player-name").value.trim().toLowerCase();
+  const name = document.getElementById("player-name").value.trim().toLowerCase();
   if (!name) return;
 
   playerState.playerName = name;
@@ -49,7 +49,7 @@ function enterGame(e) {
   }
 
   // Restore or generate card seed
-  var saved = loadPlayerData();
+  const saved = loadPlayerData();
   if (saved && saved.seed) {
     playerState.cardSeed = saved.seed;
     playerState.marked = new Set(saved.marks);
@@ -75,9 +75,9 @@ function enterGame(e) {
     document.getElementById("display-seed").textContent = playerState.cardSeed;
 
     // Show target pattern
-    var pattern = getPattern(playerState.patternId);
-    var goalEl = document.getElementById("goal-indicator");
-    var hasGoalCells = pattern && pattern.sets && pattern.sets.length === 1;
+    const pattern = getPattern(playerState.patternId);
+    const goalEl = document.getElementById("goal-indicator");
+    const hasGoalCells = pattern && pattern.sets && pattern.sets.length === 1;
     goalEl.innerHTML =
       '<span class="goal-label">Goal:</span>' +
       renderPatternPreview(pattern) +
@@ -93,21 +93,21 @@ function enterGame(e) {
 }
 
 function renderCard() {
-  var grid = document.getElementById("bingo-grid");
+  const grid = document.getElementById("bingo-grid");
   grid.innerHTML = "";
 
   // Get goal cells from pattern — only for single-set patterns
   // Multi-set patterns (Any Line, Postage Stamp, etc.) are ambiguous
-  var pattern = getPattern(playerState.patternId);
-  var goalCells = new Set();
+  const pattern = getPattern(playerState.patternId);
+  const goalCells = new Set();
   if (pattern && pattern.sets && pattern.sets.length === 1) {
-    for (var c = 0; c < pattern.sets[0].length; c++) {
+    for (let c = 0; c < pattern.sets[0].length; c++) {
       goalCells.add(pattern.sets[0][c]);
     }
   }
 
   playerState.cells.forEach(function(cell, idx) {
-    var div = document.createElement("div");
+    const div = document.createElement("div");
     div.className = "bingo-cell";
     div.dataset.index = idx;
 
@@ -145,7 +145,7 @@ function toggleCell(idx) {
   }
 
   // Update visual
-  var cell = document.querySelector('.bingo-cell[data-index="' + idx + '"]');
+  const cell = document.querySelector('.bingo-cell[data-index="' + idx + '"]');
   cell.classList.toggle("marked");
 
   savePlayerData();
@@ -153,14 +153,14 @@ function toggleCell(idx) {
 }
 
 function toggleFocusGoal(on) {
-  var grid = document.getElementById("bingo-grid");
+  const grid = document.getElementById("bingo-grid");
   grid.classList.toggle("focus-goal", on);
 }
 
 function checkForWin() {
-  var result = checkWin(playerState.marked, playerState.patternId);
-  var banner = document.getElementById("win-banner");
-  var patterns = document.getElementById("win-patterns");
+  const result = checkWin(playerState.marked, playerState.patternId);
+  const banner = document.getElementById("win-banner");
+  const patterns = document.getElementById("win-patterns");
 
   if (result) {
     banner.classList.add("show");
@@ -172,7 +172,7 @@ function checkForWin() {
 
 // Init: check if we should restore a session
 (function init() {
-  var gameCode = getParam("game");
+  const gameCode = getParam("game");
   if (!gameCode) {
     // No game code — redirect to home
     window.location.href = "index.html";

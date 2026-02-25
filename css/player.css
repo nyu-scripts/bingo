@@ -90,6 +90,7 @@
 /* Marked state */
 .bingo-cell.marked {
   border-color: var(--success);
+  border-width: 5px;
   background: rgba(46, 204, 113, 0.15);
 }
 

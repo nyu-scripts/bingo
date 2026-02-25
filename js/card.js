@@ -2,8 +2,8 @@
 // Requires: prng.js (cyrb53, seededRng), game.js (CODE_CHARS)
 
 function generateCardSeed() {
-  var seed = "";
-  for (var i = 0; i < 4; i++) {
+  let seed = "";
+  for (let i = 0; i < 4; i++) {
     seed += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
   }
   return seed;

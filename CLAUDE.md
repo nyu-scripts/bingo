@@ -10,11 +10,11 @@ Picture Bingo — a serverless browser-based bingo game with pictures. Pure vani
 - **Random cards with seed verification**: each player gets a random 4-char card seed; `gameCode + ":" + cardSeed` seeds the PRNG for card generation. Host verifies bingo by entering the card seed
 - **Win patterns**: defined in `js/win.js` as arrays of cell index sets; custom patterns use a `c_<base36>` encoding of a 25-bit grid bitmask
 - **Custom text themes**: host enters item names, which are joined with `|`, base64url-encoded, and passed as `citems` URL parameter to players. Items render as auto-colored SVG placeholders
-- **Custom image themes (URL scrape)**: host provides a URL + optional prefix filter, system extracts `<img>` tags (with paste-HTML fallback for CORS). Images are encoded as `name\tsuffix` pairs in a `uitems` URL parameter, with the common URL prefix stored separately as `uprefix` to keep URLs short. Players decode items from the share link — no re-fetching needed
+- **Custom image themes**: host enters image URLs directly (one per line) or pastes page HTML to extract `<img>` tags, with an optional prefix filter. Images are encoded as `name\tsuffix` pairs in a `uitems` URL parameter, with the common URL prefix stored separately as `uprefix` to keep URLs short. Players decode items from the share link — no re-fetching needed
 
 ## Key Conventions
 
-- All JS is plain ES5+ with no modules — files are loaded via `<script>` tags in dependency order
+- All JS is plain ES2015+ (const/let, no modules) — files are loaded via `<script>` tags in dependency order
 - CSS uses custom properties defined in `:root` in `css/style.css` (dark theme)
 - The 5x5 grid uses indices 0-24, left-to-right top-to-bottom; index 12 is always FREE
 - Card seeds are 4 uppercase alphanumeric characters (using `CODE_CHARS` from `game.js`)
@@ -41,7 +41,7 @@ Picture Bingo — a serverless browser-based bingo game with pictures. Pure vani
 | `js/game.js` | `generateGameCode()`, `getParam()`, `buildPlayUrl()`, `buildHostUrl()` (both accept optional `citems`, `uitems`, `uprefix`), `copyToClipboard()` |
 | `js/card.js` | `generateCardSeed()`, `generateCard(themeItems, gameCode, cardSeed)` — random seed + deterministic 25-cell array |
 | `js/win.js` | `WIN_PATTERNS`, `getPattern()`, `decodeCustomPattern()`, `checkWin()`, `renderPatternPreview()` |
-| `js/host.js` | Host page controller — game creation, draw loop, pattern picker, custom grid builder, custom text theme builder, URL scrape image builder, bingo verification by card seed |
+| `js/host.js` | Host page controller — game creation, draw loop, pattern picker, custom grid builder, custom text theme builder, custom image builder (image list + paste HTML), bingo verification by card seed |
 | `js/player.js` | Player page controller — name entry, card seed generation/restore, card rendering, cell toggling, win detection |
 | `js/test.js` | Browser test suite — assertions for PRNG, card generation, win detection, custom patterns, custom text themes |
 
@@ -82,5 +82,5 @@ Serve locally (`python3 -m http.server 8000`) and test:
 - Custom patterns: draw pattern on host, verify it encodes in URL and decodes correctly on player side
 - Card seeds: enter game as player, note the card code, refresh and re-enter — same card. Enter as different name — new random card. Host verify with card code — should match
 - Custom text theme: select "Custom (Text)", enter 24+ items, create game, copy link, open as player — items display as colored SVG squares, bingo verification works
-- Custom image theme: select "Custom (Images)", enter URL + prefix, click Fetch (or paste HTML on CORS failure), verify preview grid, create game, copy link, open as player — images render on card, bingo verification works
+- Custom image theme: select "Custom (Images)", enter image URLs (one per line) or paste page HTML, optionally set prefix filter, verify preview grid, create game, copy link, open as player — images render on card, bingo verification works
 - Theme preview: open `themes.html`, verify all images load for each theme

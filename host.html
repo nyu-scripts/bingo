@@ -25,17 +25,26 @@
       </div>
 
       <div id="url-scrape-builder" class="url-scrape-builder" style="display:none">
-        <label for="scrape-url">Page URL</label>
-        <input type="text" id="scrape-url" placeholder="https://example.com/gallery">
+        <div class="scrape-tabs">
+          <button class="scrape-tab active" data-tab="list" onclick="switchScrapeTab('list')">Image List</button>
+          <button class="scrape-tab" data-tab="html" onclick="switchScrapeTab('html')">Paste HTML</button>
+        </div>
+
+        <div id="scrape-tab-list" class="scrape-panel">
+          <label for="scrape-image-list">Image URLs (one per line)</label>
+          <textarea id="scrape-image-list" rows="8" placeholder="https://example.com/images/cat.png&#10;https://example.com/images/dog.png&#10;..."></textarea>
+          <button class="btn-secondary" onclick="parseImageList()">Load Images</button>
+        </div>
+
+        <div id="scrape-tab-html" class="scrape-panel" style="display:none">
+          <label for="scrape-paste-direct">Page HTML source</label>
+          <textarea id="scrape-paste-direct" rows="8" placeholder="View page source in your browser, copy all, and paste here..."></textarea>
+          <button class="btn-secondary" onclick="parseDirectHtml()">Parse HTML</button>
+        </div>
+
         <label for="scrape-prefix">Image URL prefix filter (optional)</label>
         <input type="text" id="scrape-prefix" placeholder="https://example.com/images/">
-        <button class="btn-secondary" id="btn-fetch-scrape" onclick="fetchUrlScrape()">Fetch Images</button>
         <div class="scrape-status" id="scrape-status"></div>
-        <div id="scrape-fallback" style="display:none">
-          <label for="scrape-paste-html">Paste page HTML source</label>
-          <textarea id="scrape-paste-html" rows="8" placeholder="View page source in your browser, copy all, and paste here..."></textarea>
-          <button class="btn-secondary" onclick="parsePastedHtml()">Parse HTML</button>
-        </div>
         <div class="scrape-preview" id="scrape-preview"></div>
       </div>
 

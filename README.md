@@ -22,6 +22,11 @@ Five built-in themes are available:
 - **Green Neopets** (55 pets)
 - **Woodland Neopets** (55 pets)
 
+Two custom theme modes:
+
+- **Custom (Text)** — host types item names, they get base64url-encoded into a `citems` URL parameter and render as auto-colored SVG placeholder squares
+- **Custom (Images)** — host provides a URL + optional prefix filter, the system extracts `<img>` tags from the page (with a paste-HTML fallback for CORS failures). Image URLs are split into a shared `uprefix` and per-item suffixes encoded in `uitems`, keeping share links short. Players decode everything from the link — no re-fetching needed
+
 Theme data is stored as JSON files in `themes/`. The theme preview page (`themes.html`) lets you browse all themes and pre-cache images before starting a game.
 
 ## Running Locally
@@ -81,6 +86,68 @@ node test-node.js
 ```
 
 The test suite covers PRNG determinism, card generation, win detection, custom pattern encode/decode, custom text theme encode/decode, and end-to-end host verification simulation.
+
+## Architecture Walkthrough
+
+### Data Flow
+
+```
+Host creates game → encodes theme data into URL params → shares link
+Player opens link → decodes theme from URL → generates card from seed → plays
+Host verifies    → re-generates card from seed → checks drawn items match
+```
+
+Everything is serverless — the URL is the state transfer mechanism.
+
+### Core Scripts (loaded in order)
+
+**`js/prng.js`** — Deterministic randomness. `cyrb53` hashes a string into a number, `mulberry32` turns that into a repeatable PRNG. This is why the same game code + card seed always produces the same card — no server needed.
+
+**`js/theme.js`** — Theme registry and encoding. Three theme types:
+1. **Built-in** (e.g. "Biscuit Neopets") — fetches `themes/<id>.json`, each item has `{name, image}`
+2. **Custom (Text)** — host types names → `encodeCustomItems()` joins with `|`, base64url-encodes → `citems` URL param → player decodes → SVG placeholder squares
+3. **Custom (Images)** — host scrapes a page → `encodeUrlItems(items, prefix)` strips the common URL prefix and encodes `name\tsuffix` pairs → `uitems` + `uprefix` URL params → player decodes, reconstructs full URLs
+
+`loadTheme()` is the single entry point — it branches on `themeId` to decide which decoding path to use.
+
+**`js/game.js`** — URL builders. `buildPlayUrl()` / `buildHostUrl()` assemble the share links with all the right params (`game`, `theme`, `pattern`, `citems`, `uitems`, `uprefix`). `getParam()` reads them back.
+
+**`js/card.js`** — Card generation. `generateCard(items, gameCode, cardSeed)` seeds the PRNG with `gameCode + ":" + cardSeed`, then shuffles items deterministically to pick 24 for the grid. Index 12 is always FREE. This determinism is what makes verification work — the host can recreate any player's card from just their 4-char seed.
+
+**`js/win.js`** — Win patterns. `WIN_PATTERNS` defines built-in patterns (lines, diagonals, corners, etc.) as arrays of cell index sets. Custom patterns use `c_<base36>` encoding of a 25-bit bitmask. `checkWin(marked, patternId)` tests if the marked cells satisfy any set in the pattern.
+
+### Page Controllers
+
+**`js/host.js`** — Host flow:
+```
+populateThemeSelect() → user picks theme/pattern → createGame()
+  ↓
+loadTheme() → shuffle pool → saveHostState() → showGamePanel()
+  ↓
+drawNext() pops from pool → showDrawnItem() → renderHistory()
+  ↓
+verifyBingo() → regenerates card from seed → checks drawn names → pass/fail
+```
+
+Key state: `hostState` tracks `gameCode`, `theme`, `drawn[]`, `pool[]`, and custom data (`customItems`, `urlItems`, `urlPrefix`). Persisted to `sessionStorage` so refreshing doesn't lose the game.
+
+For URL scrape specifically: `fetchUrlScrape()` tries `fetch(url)`, falls back to paste-HTML on CORS failure. `parseImagesFromHtml()` uses `DOMParser` to extract `<img>` tags filtered by prefix. `ensureUniqueNames()` appends suffixes to duplicates (critical — `verifyBingo` matches by name). `commonUrlPrefix()` computes the shared URL prefix so only suffixes get base64-encoded.
+
+**`js/player.js`** — Player flow:
+```
+enterGame() → loadTheme() → generateCard() → renderCard()
+  ↓
+toggleCell() → update marked set → savePlayerData() → checkForWin()
+```
+
+Card seed is generated once per player name and persisted to `localStorage`, so refreshing keeps the same card. The player never re-fetches the source page — all image URLs are decoded from the share link.
+
+### Why Verification Works Without a Server
+
+1. Host creates game with code `ABC123`, draws items in order
+2. Player gets card seed `XY7Z`, card is deterministically generated from `ABC123:XY7Z`
+3. Player claims bingo, tells host their seed `XY7Z`
+4. Host enters `XY7Z` → `generateCard()` recreates the exact same card → checks which cells match drawn items → confirms or denies
 
 ## Tech Stack
 

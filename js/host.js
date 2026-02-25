@@ -1,6 +1,6 @@
 // Host page controller
 
-var hostState = {
+const hostState = {
   gameCode: null,
   themeId: null,
   theme: null,
@@ -14,7 +14,7 @@ var hostState = {
 };
 
 function saveHostState() {
-  var data = {
+  const data = {
     gameCode: hostState.gameCode,
     themeId: hostState.themeId,
     patternId: hostState.patternId,
@@ -28,12 +28,12 @@ function saveHostState() {
 }
 
 function restoreHostState() {
-  var saved = sessionStorage.getItem("bingo_host");
+  const saved = sessionStorage.getItem("bingo_host");
   if (!saved) return Promise.resolve(false);
-  var data = JSON.parse(saved);
+  const data = JSON.parse(saved);
   // Also check URL params match
-  var urlGame = getParam("game");
-  var urlTheme = getParam("theme");
+  const urlGame = getParam("game");
+  const urlTheme = getParam("theme");
   if (urlGame && urlGame !== data.gameCode) return Promise.resolve(false);
   if (urlTheme && urlTheme !== data.themeId) return Promise.resolve(false);
 
@@ -54,12 +54,12 @@ function restoreHostState() {
 }
 
 function parseCustomItemNames(raw) {
-  var seen = {};
+  const seen = {};
   return raw.split("\n")
     .map(function(line) { return line.trim().replace(/\|/g, "").substring(0, 40); })
     .filter(function(line) { return line.length > 0; })
     .filter(function(line) {
-      var key = line.toLowerCase();
+      const key = line.toLowerCase();
       if (seen[key]) return false;
       seen[key] = true;
       return true;
@@ -67,13 +67,13 @@ function parseCustomItemNames(raw) {
 }
 
 function createGame() {
-  var themeId = document.getElementById("theme-select").value;
-  var gameCode = generateGameCode();
+  const themeId = document.getElementById("theme-select").value;
+  const gameCode = generateGameCode();
 
   // Handle custom text theme
   if (themeId === "custom") {
-    var raw = document.getElementById("custom-items-textarea").value;
-    var names = parseCustomItemNames(raw);
+    const raw = document.getElementById("custom-items-textarea").value;
+    const names = parseCustomItemNames(raw);
     if (names.length < 24) {
       alert("Please enter at least 24 unique items (you have " + names.length + ").");
       return;
@@ -109,9 +109,9 @@ function createGame() {
     hostState.pool = hostState.theme.items.map(function(_, i) { return i; });
 
     // Shuffle pool
-    for (var i = hostState.pool.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = hostState.pool[i];
+    for (let i = hostState.pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = hostState.pool[i];
       hostState.pool[i] = hostState.pool[j];
       hostState.pool[j] = tmp;
     }
@@ -119,7 +119,7 @@ function createGame() {
     saveHostState();
 
     // Update URL without reload
-    var url = buildHostUrl(gameCode, themeId, hostState.patternId, hostState.customItems, hostState.urlItems, hostState.urlPrefix);
+    const url = buildHostUrl(gameCode, themeId, hostState.patternId, hostState.customItems, hostState.urlItems, hostState.urlPrefix);
     history.replaceState(null, "", url);
 
     showGamePanel();
@@ -131,12 +131,12 @@ function showGamePanel() {
   document.getElementById("game-panel").style.display = "block";
 
   document.getElementById("display-code").textContent = hostState.gameCode;
-  var playUrl = buildPlayUrl(hostState.gameCode, hostState.themeId, hostState.patternId, hostState.customItems, hostState.urlItems, hostState.urlPrefix);
+  const playUrl = buildPlayUrl(hostState.gameCode, hostState.themeId, hostState.patternId, hostState.customItems, hostState.urlItems, hostState.urlPrefix);
   document.getElementById("share-link").textContent = playUrl;
 
   // Show current pattern
-  var pattern = getPattern(hostState.patternId);
-  var patternInfo = document.getElementById("game-pattern-info");
+  const pattern = getPattern(hostState.patternId);
+  const patternInfo = document.getElementById("game-pattern-info");
   patternInfo.innerHTML =
     '<span class="pattern-label">Win pattern:</span>' +
     renderPatternPreview(pattern) +
@@ -147,7 +147,7 @@ function showGamePanel() {
 
   // Show last drawn item if any
   if (hostState.drawn.length > 0) {
-    var lastIdx = hostState.drawn[hostState.drawn.length - 1];
+    const lastIdx = hostState.drawn[hostState.drawn.length - 1];
     showDrawnItem(hostState.theme.items[lastIdx]);
   }
 }
@@ -159,35 +159,35 @@ function drawNext() {
     return;
   }
 
-  var idx = hostState.pool.pop();
+  const idx = hostState.pool.pop();
   hostState.drawn.push(idx);
   saveHostState();
 
-  var item = hostState.theme.items[idx];
+  const item = hostState.theme.items[idx];
   showDrawnItem(item);
   updateDrawCounter();
   renderHistory();
 }
 
 function showDrawnItem(item) {
-  var container = document.getElementById("current-draw");
+  const container = document.getElementById("current-draw");
   container.innerHTML = '<img src="' + item.image + '" alt="' + item.name + '">';
   document.getElementById("current-name").textContent = item.name;
 }
 
 function updateDrawCounter() {
-  var total = hostState.drawn.length + hostState.pool.length;
+  const total = hostState.drawn.length + hostState.pool.length;
   document.getElementById("draw-counter").textContent =
     hostState.drawn.length + " / " + total + " drawn";
 }
 
 function renderHistory() {
-  var grid = document.getElementById("history-grid");
+  const grid = document.getElementById("history-grid");
   grid.innerHTML = "";
   // Show in reverse chronological order (most recent first)
-  for (var i = hostState.drawn.length - 1; i >= 0; i--) {
-    var item = hostState.theme.items[hostState.drawn[i]];
-    var div = document.createElement("div");
+  for (let i = hostState.drawn.length - 1; i >= 0; i--) {
+    const item = hostState.theme.items[hostState.drawn[i]];
+    const div = document.createElement("div");
     div.className = "history-item";
     div.innerHTML =
       '<img src="' + item.image + '" alt="' + item.name + '">' +
@@ -197,7 +197,7 @@ function renderHistory() {
 }
 
 function copyLink() {
-  var url = buildPlayUrl(hostState.gameCode, hostState.themeId, hostState.patternId, hostState.customItems, hostState.urlItems, hostState.urlPrefix);
+  const url = buildPlayUrl(hostState.gameCode, hostState.themeId, hostState.patternId, hostState.customItems, hostState.urlItems, hostState.urlPrefix);
   copyToClipboard(url, document.getElementById("btn-copy"));
 }
 
@@ -207,18 +207,18 @@ function resetGame() {
 }
 
 function encodeCustomPattern(grid) {
-  var bits = 0;
-  for (var i = 0; i < 25; i++) {
+  let bits = 0;
+  for (let i = 0; i < 25; i++) {
     if (grid[i]) bits |= (1 << i);
   }
   return "c_" + bits.toString(36);
 }
 
 function renderCustomGrid() {
-  var container = document.getElementById("custom-grid");
+  const container = document.getElementById("custom-grid");
   container.innerHTML = "";
-  for (var i = 0; i < 25; i++) {
-    var cell = document.createElement("div");
+  for (let i = 0; i < 25; i++) {
+    const cell = document.createElement("div");
     cell.className = hostState.customGrid[i] ? "on" : "off";
     (function(idx, el) {
       el.addEventListener("click", function() {
@@ -232,21 +232,21 @@ function renderCustomGrid() {
 }
 
 function updateCustomPreview() {
-  var card = document.querySelector('.pattern-card[data-pattern-id="custom"]');
+  const card = document.querySelector('.pattern-card[data-pattern-id="custom"]');
   if (!card) return;
-  var preview = card.querySelector(".pattern-mini");
+  const preview = card.querySelector(".pattern-mini");
   if (!preview) return;
-  var cells = preview.children;
-  for (var i = 0; i < 25; i++) {
+  const cells = preview.children;
+  for (let i = 0; i < 25; i++) {
     cells[i].className = hostState.customGrid[i] ? "on" : "off";
   }
 }
 
 function renderPatternPicker() {
-  var picker = document.getElementById("pattern-picker");
+  const picker = document.getElementById("pattern-picker");
   picker.innerHTML = "";
   WIN_PATTERNS.forEach(function(p) {
-    var card = document.createElement("div");
+    const card = document.createElement("div");
     card.className = "pattern-card" + (p.id === hostState.patternId ? " selected" : "");
     card.dataset.patternId = p.id;
     card.innerHTML = renderPatternPreview(p) + '<span class="pattern-name">' + p.name + '</span>';
@@ -255,11 +255,11 @@ function renderPatternPicker() {
   });
 
   // Add Custom card
-  var isCustom = hostState.patternId.startsWith("c_");
-  var customCard = document.createElement("div");
+  const isCustom = hostState.patternId.startsWith("c_");
+  const customCard = document.createElement("div");
   customCard.className = "pattern-card" + (isCustom ? " selected" : "");
   customCard.dataset.patternId = "custom";
-  var customPreview = { grid: hostState.customGrid };
+  const customPreview = { grid: hostState.customGrid };
   customCard.innerHTML = renderPatternPreview(customPreview) + '<span class="pattern-name">Custom</span>';
   customCard.addEventListener("click", function() { selectPattern("custom"); });
   picker.appendChild(customCard);
@@ -271,7 +271,7 @@ function selectPattern(id) {
     c.classList.toggle("selected", c.dataset.patternId === id);
   });
 
-  var builder = document.getElementById("custom-grid-builder");
+  const builder = document.getElementById("custom-grid-builder");
   if (id === "custom") {
     builder.style.display = "";
     renderCustomGrid();
@@ -281,27 +281,27 @@ function selectPattern(id) {
 }
 
 function verifyBingo() {
-  var seedInput = document.getElementById("verify-seed");
-  var seed = seedInput.value.trim().toUpperCase();
+  const seedInput = document.getElementById("verify-seed");
+  const seed = seedInput.value.trim().toUpperCase();
   if (!seed) { seedInput.focus(); return; }
 
-  var cells = generateCard(hostState.theme.items, hostState.gameCode, seed);
-  var drawnNames = new Set(hostState.drawn.map(function(i) { return hostState.theme.items[i].name; }));
+  const cells = generateCard(hostState.theme.items, hostState.gameCode, seed);
+  const drawnNames = new Set(hostState.drawn.map(function(i) { return hostState.theme.items[i].name; }));
 
-  var marked = new Set();
-  for (var i = 0; i < 25; i++) {
+  const marked = new Set();
+  for (let i = 0; i < 25; i++) {
     if (cells[i].free || drawnNames.has(cells[i].name)) marked.add(i);
   }
 
-  var label = "Card #" + seed;
-  var winResult = checkWin(marked, hostState.patternId);
+  const label = "Card #" + seed;
+  const winResult = checkWin(marked, hostState.patternId);
 
   // Find the winning cell indices to highlight
-  var winCells = new Set();
+  const winCells = new Set();
   if (winResult) {
-    var pattern = getPattern(hostState.patternId);
-    for (var s = 0; s < pattern.sets.length; s++) {
-      var set = pattern.sets[s];
+    const pattern = getPattern(hostState.patternId);
+    for (let s = 0; s < pattern.sets.length; s++) {
+      const set = pattern.sets[s];
       if (set.every(function(i) { return marked.has(i); })) {
         set.forEach(function(i) { winCells.add(i); });
       }
@@ -309,15 +309,15 @@ function verifyBingo() {
   }
 
   // Get goal cells for dimming non-essential cells
-  var goalCells = new Set();
-  var verifyPattern = getPattern(hostState.patternId);
+  const goalCells = new Set();
+  const verifyPattern = getPattern(hostState.patternId);
   if (verifyPattern && verifyPattern.sets && verifyPattern.sets.length === 1) {
-    for (var g = 0; g < verifyPattern.sets[0].length; g++) {
+    for (let g = 0; g < verifyPattern.sets[0].length; g++) {
       goalCells.add(verifyPattern.sets[0][g]);
     }
   }
 
-  var resultEl = document.getElementById("verify-result");
+  const resultEl = document.getElementById("verify-result");
   resultEl.innerHTML =
     '<div class="verify-message ' + (winResult ? "pass" : "fail") + '">' +
       (winResult ? "Valid BINGO! (" + winResult + ")" : "Not a valid BINGO") +
@@ -327,9 +327,9 @@ function verifyBingo() {
 }
 
 function renderVerifyGrid(cells, marked, winCells, goalCells) {
-  var html = '<div class="verify-grid">';
-  for (var i = 0; i < 25; i++) {
-    var cls = marked.has(i) ? "drawn" : "not-drawn";
+  let html = '<div class="verify-grid">';
+  for (let i = 0; i < 25; i++) {
+    let cls = marked.has(i) ? "drawn" : "not-drawn";
     if (winCells && winCells.has(i)) cls += " win-cell";
     if (goalCells && goalCells.size > 0 && !goalCells.has(i) && !cells[i].free) cls += " dim-cell";
     if (cells[i].free) {
@@ -345,29 +345,29 @@ function renderVerifyGrid(cells, marked, winCells, goalCells) {
 }
 
 function parseImagesFromHtml(html, prefix) {
-  var doc = new DOMParser().parseFromString(html, "text/html");
-  var imgs = doc.querySelectorAll("img");
-  var seen = {};
-  var results = [];
-  for (var i = 0; i < imgs.length; i++) {
-    var src = imgs[i].getAttribute("src");
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const imgs = doc.querySelectorAll("img");
+  const seen = {};
+  const results = [];
+  for (let i = 0; i < imgs.length; i++) {
+    const src = imgs[i].getAttribute("src");
     if (!src) continue;
     if (prefix && src.indexOf(prefix) !== 0) continue;
     if (seen[src]) continue;
     seen[src] = true;
-    var alt = imgs[i].getAttribute("alt");
-    var name = (alt && alt.trim()) ? alt.trim() : nameFromUrl(src);
+    const alt = imgs[i].getAttribute("alt");
+    const name = (alt && alt.trim()) ? alt.trim() : nameFromUrl(src);
     results.push({ name: name.substring(0, 40), image: src });
   }
   return results;
 }
 
 function ensureUniqueNames(items) {
-  var counts = {};
-  var result = [];
-  for (var i = 0; i < items.length; i++) {
-    var base = items[i].name;
-    var key = base.toLowerCase();
+  const counts = {};
+  const result = [];
+  for (let i = 0; i < items.length; i++) {
+    const base = items[i].name;
+    const key = base.toLowerCase();
     if (counts[key] === undefined) {
       counts[key] = 0;
     }
@@ -375,9 +375,9 @@ function ensureUniqueNames(items) {
     result.push({ name: base, image: items[i].image, _key: key });
   }
   // Second pass: append suffix to duplicates
-  var seen = {};
-  for (var j = 0; j < result.length; j++) {
-    var k = result[j]._key;
+  const seen = {};
+  for (let j = 0; j < result.length; j++) {
+    const k = result[j]._key;
     if (counts[k] > 1) {
       if (seen[k] === undefined) seen[k] = 0;
       seen[k]++;
@@ -388,49 +388,26 @@ function ensureUniqueNames(items) {
   return result;
 }
 
-function fetchUrlScrape() {
-  var urlInput = document.getElementById("scrape-url");
-  var url = urlInput.value.trim();
-  if (!url) { urlInput.focus(); return; }
-
-  var prefix = document.getElementById("scrape-prefix").value.trim();
-  var status = document.getElementById("scrape-status");
-  var fallback = document.getElementById("scrape-fallback");
-
-  status.textContent = "Fetching...";
-  status.className = "scrape-status";
-  fallback.style.display = "none";
-
-  fetch(url)
-    .then(function(res) {
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      return res.text();
-    })
-    .then(function(html) {
-      var items = parseImagesFromHtml(html, prefix);
-      items = ensureUniqueNames(items);
-      if (items.length === 0) {
-        status.textContent = "No images found" + (prefix ? " matching that prefix." : ".");
-        status.className = "scrape-status error";
-        return;
-      }
-      displayScrapedItems(items);
-    })
-    .catch(function() {
-      status.textContent = "Could not fetch URL (likely CORS). Paste the page HTML source below instead.";
-      status.className = "scrape-status error";
-      fallback.style.display = "";
-    });
+function switchScrapeTab(tab) {
+  const tabs = document.querySelectorAll(".scrape-tab");
+  for (let i = 0; i < tabs.length; i++) {
+    tabs[i].classList.toggle("active", tabs[i].dataset.tab === tab);
+  }
+  const panels = ["list", "html"];
+  for (let j = 0; j < panels.length; j++) {
+    const panel = document.getElementById("scrape-tab-" + panels[j]);
+    if (panel) panel.style.display = panels[j] === tab ? "" : "none";
+  }
 }
 
-function parsePastedHtml() {
-  var html = document.getElementById("scrape-paste-html").value;
+function parseDirectHtml() {
+  const html = document.getElementById("scrape-paste-direct").value;
   if (!html.trim()) return;
 
-  var prefix = document.getElementById("scrape-prefix").value.trim();
-  var status = document.getElementById("scrape-status");
+  const prefix = document.getElementById("scrape-prefix").value.trim();
+  const status = document.getElementById("scrape-status");
 
-  var items = parseImagesFromHtml(html, prefix);
+  let items = parseImagesFromHtml(html, prefix);
   items = ensureUniqueNames(items);
   if (items.length === 0) {
     status.textContent = "No images found in pasted HTML" + (prefix ? " matching that prefix." : ".");
@@ -440,32 +417,62 @@ function parsePastedHtml() {
   displayScrapedItems(items);
 }
 
+function parseImageList() {
+  const raw = document.getElementById("scrape-image-list").value;
+  const prefix = document.getElementById("scrape-prefix").value.trim();
+  const status = document.getElementById("scrape-status");
+
+  let lines = raw.split("\n")
+    .map(function(l) { return l.trim(); })
+    .filter(function(l) { return l.length > 0 && (l.indexOf("http://") === 0 || l.indexOf("https://") === 0); });
+
+  if (prefix) {
+    lines = lines.filter(function(l) { return l.indexOf(prefix) === 0; });
+  }
+
+  if (lines.length === 0) {
+    status.textContent = "No valid image URLs found" + (prefix ? " matching that prefix." : ".");
+    status.className = "scrape-status error";
+    return;
+  }
+
+  const seen = {};
+  let items = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (seen[lines[i]]) continue;
+    seen[lines[i]] = true;
+    items.push({ name: nameFromUrl(lines[i]).substring(0, 40), image: lines[i] });
+  }
+  items = ensureUniqueNames(items);
+  displayScrapedItems(items);
+}
+
 function commonUrlPrefix(urls) {
   if (urls.length === 0) return "";
-  var prefix = urls[0];
-  for (var i = 1; i < urls.length; i++) {
+  let prefix = urls[0];
+  for (let i = 1; i < urls.length; i++) {
     while (urls[i].indexOf(prefix) !== 0) {
       prefix = prefix.substring(0, prefix.length - 1);
       if (!prefix) return "";
     }
   }
-  var lastSlash = prefix.lastIndexOf("/");
+  const lastSlash = prefix.lastIndexOf("/");
   return lastSlash >= 0 ? prefix.substring(0, lastSlash + 1) : "";
 }
 
 function displayScrapedItems(items) {
-  var status = document.getElementById("scrape-status");
+  const status = document.getElementById("scrape-status");
   status.textContent = items.length + " image" + (items.length !== 1 ? "s" : "") + " found" + (items.length < 24 ? " (need at least 24)" : "");
   status.className = "scrape-status" + (items.length >= 24 ? " success" : " error");
 
-  var prefix = commonUrlPrefix(items.map(function(it) { return it.image; }));
+  const prefix = commonUrlPrefix(items.map(function(it) { return it.image; }));
   hostState.urlPrefix = prefix;
   hostState.urlItems = encodeUrlItems(items, prefix);
 
-  var preview = document.getElementById("scrape-preview");
+  const preview = document.getElementById("scrape-preview");
   preview.innerHTML = "";
-  for (var i = 0; i < items.length; i++) {
-    var div = document.createElement("div");
+  for (let i = 0; i < items.length; i++) {
+    const div = document.createElement("div");
     div.className = "scrape-preview-item";
     div.innerHTML = '<img src="' + items[i].image + '" alt="' + escapeXml(items[i].name) + '">' +
       '<span>' + escapeXml(items[i].name) + '</span>';
@@ -474,11 +481,11 @@ function displayScrapedItems(items) {
 }
 
 function populateThemeSelect() {
-  var select = document.getElementById("theme-select");
+  const select = document.getElementById("theme-select");
   select.innerHTML = "";
-  var lastTheme = localStorage.getItem("bingo_last_theme");
+  const lastTheme = localStorage.getItem("bingo_last_theme");
   getThemeList().forEach(function(t) {
-    var opt = document.createElement("option");
+    const opt = document.createElement("option");
     opt.value = t.id;
     opt.textContent = t.title;
     if (t.id === lastTheme) opt.selected = true;
@@ -490,22 +497,22 @@ function populateThemeSelect() {
   });
 
   // Add Custom (Text) option
-  var customOpt = document.createElement("option");
+  const customOpt = document.createElement("option");
   customOpt.value = "custom";
   customOpt.textContent = "Custom (Text)";
   if (lastTheme === "custom") customOpt.selected = true;
   select.appendChild(customOpt);
 
   // Add Custom (Images) option
-  var urlOpt = document.createElement("option");
+  const urlOpt = document.createElement("option");
   urlOpt.value = "urlscrape";
   urlOpt.textContent = "Custom (Images)";
   if (lastTheme === "urlscrape") urlOpt.selected = true;
   select.appendChild(urlOpt);
 
   // Show/hide custom builders
-  var builder = document.getElementById("custom-items-builder");
-  var urlBuilder = document.getElementById("url-scrape-builder");
+  const builder = document.getElementById("custom-items-builder");
+  const urlBuilder = document.getElementById("url-scrape-builder");
   function updateBuilderVisibility() {
     builder.style.display = select.value === "custom" ? "" : "none";
     urlBuilder.style.display = select.value === "urlscrape" ? "" : "none";
@@ -514,10 +521,10 @@ function populateThemeSelect() {
   select.addEventListener("change", updateBuilderVisibility);
 
   // Live item counter
-  var textarea = document.getElementById("custom-items-textarea");
-  var counter = document.getElementById("custom-items-counter");
+  const textarea = document.getElementById("custom-items-textarea");
+  const counter = document.getElementById("custom-items-counter");
   textarea.addEventListener("input", function() {
-    var names = parseCustomItemNames(textarea.value);
+    const names = parseCustomItemNames(textarea.value);
     counter.textContent = names.length + " item" + (names.length !== 1 ? "s" : "");
     counter.className = "custom-items-counter" + (names.length < 24 ? " insufficient" : "");
   });
@@ -525,17 +532,17 @@ function populateThemeSelect() {
 
 // Init
 (function init() {
-  var urlGame = getParam("game");
-  var urlTheme = getParam("theme");
-  var urlPattern = getParam("pattern");
-  var urlCitems = getParam("citems");
-  var urlUitems = getParam("uitems");
-  var urlUprefix = getParam("uprefix");
+  const urlGame = getParam("game");
+  const urlTheme = getParam("theme");
+  const urlPattern = getParam("pattern");
+  const urlCitems = getParam("citems");
+  const urlUitems = getParam("uitems");
+  const urlUprefix = getParam("uprefix");
 
   if (urlPattern) {
     hostState.patternId = urlPattern;
     if (urlPattern.startsWith("c_")) {
-      var decoded = decodeCustomPattern(urlPattern);
+      const decoded = decodeCustomPattern(urlPattern);
       hostState.customGrid = decoded.grid;
     }
   }
@@ -571,9 +578,9 @@ function populateThemeSelect() {
         hostState.drawn = [];
         hostState.pool = hostState.theme.items.map(function(_, i) { return i; });
 
-        for (var i = hostState.pool.length - 1; i > 0; i--) {
-          var j = Math.floor(Math.random() * (i + 1));
-          var tmp = hostState.pool[i];
+        for (let i = hostState.pool.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const tmp = hostState.pool[i];
           hostState.pool[i] = hostState.pool[j];
           hostState.pool[j] = tmp;
         }
