@@ -10,7 +10,8 @@ const PALETTE = [
 // Manifest + inline fallback items for built-in themes.
 // When served via HTTP, loadTheme() fetches themes/<id>.json instead.
 const THEMES = [
-  { id: "default", title: "Default", items: [] },
+  { id: "default", title: "Numbers", items: [] },
+  { id: "emojis", title: "Emojis", items: [] },
   { id: "biscuitneopets", title: "Biscuit Neopets", items: [] },
   { id: "candyneopets", title: "Candy Neopets", items: [] },
   { id: "greenneopets", title: "Green Neopets", items: [] },
@@ -23,7 +24,9 @@ function getThemeList() {
 }
 
 function placeholderSvg(name, index) {
-  const bg = PALETTE[index % PALETTE.length];
+  // Emojis have intrinsic colors and ignore SVG fill, so use a neutral dark bg
+  const isEmoji = /[^\x00-\x7F]/.test(name);
+  const bg = isEmoji ? "#2d2d3d" : PALETTE[index % PALETTE.length];
   const fill = luma(bg) > 0.5 ? "#222" : "#fff";
   const label = escapeXml(name);
 
@@ -42,7 +45,10 @@ function placeholderSvg(name, index) {
   }
   if (current) lines.push(current);
 
-  const fontSize = lines.length <= 2 ? 14 : 12;
+  const totalChars = label.length;
+  const fontSize = lines.length === 1 && totalChars <= 2 ? 48
+    : lines.length === 1 && totalChars <= 4 ? 28
+    : lines.length <= 2 ? 14 : 12;
   const lineHeight = fontSize * 1.35;
   const blockHeight = (lines.length - 1) * lineHeight;
   const startY = 60 + fontSize * 0.35 - blockHeight / 2;
