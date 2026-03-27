@@ -25,7 +25,7 @@ function getThemeList() {
 
 function placeholderSvg(name, index) {
   // Emojis have intrinsic colors and ignore SVG fill, so use a neutral dark bg
-  const isEmoji = /[^\x00-\x7F]/.test(name);
+  const isEmoji = /\p{Emoji_Presentation}|\p{Extended_Pictographic}/u.test(name);
   const bg = isEmoji ? "#2d2d3d" : PALETTE[index % PALETTE.length];
   const fill = luma(bg) > 0.5 ? "#222" : "#fff";
   const label = escapeXml(name);
