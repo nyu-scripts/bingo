@@ -17,6 +17,8 @@ const THEMES = [
   { id: "greenneopets", title: "Green Neopets", items: [] },
   { id: "woodlandneopets", title: "Woodland Neopets", items: [] },
   { id: "paintbrushes", title: "Paint Brushes", items: [] },
+  { id: "neggs", title: "Neggs", items: [] },
+  { id: "cybunnies", title: "Cybunnies", items: [] },
 ];
 
 function getThemeList() {
