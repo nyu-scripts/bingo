@@ -2,54 +2,201 @@
   "id": "candyneopets",
   "title": "Candy neopets",
   "items": [
-    { "name": "Acara", "image": "https://i.ibb.co/Q3k2KZhq/7Y6Nyp-T.png" },
-    { "name": "Aisha", "image": "https://i.ibb.co/YTDmwm4B/1w8tkc-U.png" },
-    { "name": "Blumaroo", "image": "https://i.ibb.co/kVBtVDbL/DVLZZ4l.png" },
-    { "name": "Bori", "image": "https://i.ibb.co/B5Nbj6kB/m1z8c9X.png" },
-    { "name": "Bruce", "image": "https://i.ibb.co/zVKgn3Sv/R0kc-JXA.png" },
-    { "name": "Buzz", "image": "https://i.ibb.co/TB9Vdhvb/iw-Ci-Ptg.png" },
-    { "name": "Chia", "image": "https://i.ibb.co/1GcVhcvR/f-R0-LAv-X.png" },
-    { "name": "Chomby", "image": "https://i.ibb.co/Ngy6xkqK/n-Mqqn-No.png" },
-    { "name": "Cybunny", "image": "https://i.ibb.co/Kzbj5S5J/5mk-Aav-W.png" },
-    { "name": "Draik", "image": "https://i.ibb.co/xtgqKrn7/BLvi-Yl-G.png" },
-    { "name": "Elephante", "image": "https://i.ibb.co/cScHdpJW/JTSQ5jj.png" },
-    { "name": "Eyrie", "image": "https://i.ibb.co/DDChGQ5T/wh158q-F.png" },
-    { "name": "Flotsam", "image": "https://i.ibb.co/j9MgGPZH/m-Rzsp-Rn.png" },
-    { "name": "Gelert", "image": "https://i.ibb.co/zKvfRFS/12vapjb.png" },
-    { "name": "Gnorbu", "image": "https://i.ibb.co/tMLv7fTs/Tl-Mce-Ip.png" },
-    { "name": "Grarrl", "image": "https://i.ibb.co/rRgn4p9F/Xd03v-B7.png" },
-    { "name": "Grundo", "image": "https://i.ibb.co/pvJVx2MF/30Qa-Hiw.png" },
-    { "name": "Hissi", "image": "https://i.ibb.co/svYP9Xcc/xj-PZGIi.png" },
-    { "name": "Ixi", "image": "https://i.ibb.co/Xc8GkbR/R1Pzl1r.png" },
-    { "name": "Jetsam", "image": "https://i.ibb.co/CKT3bWK6/v7dzb3d.png" },
-    { "name": "JubJub", "image": "https://i.ibb.co/XkpMmmJP/Aw-GNF9Z.png" },
-    { "name": "Kacheek", "image": "https://i.ibb.co/c9Yjwwq/Dyq-HXaf.png" },
-    { "name": "Kau", "image": "https://i.ibb.co/Mk0w04CJ/9Eek9n-W.png" },
-    { "name": "Kiko", "image": "https://i.ibb.co/YFZD5yrw/a6kx-CDa.png" },
-    { "name": "Koi", "image": "https://i.ibb.co/vxpQkYxB/It8Tuqz.png" },
-    { "name": "Korbat", "image": "https://i.ibb.co/67NrBn5w/f4i-IFqa.png" },
-    { "name": "Kougra", "image": "https://i.ibb.co/gLVG9zR4/zw5YGVr.png" },
-    { "name": "Krawk", "image": "https://i.ibb.co/sp1HqCCn/dqwf-FB2.png" },
-    { "name": "Kyrii", "image": "https://i.ibb.co/ns92yztY/3Ga4LTo.png" },
-    { "name": "Lupe", "image": "https://i.ibb.co/8nhRFZxh/l9Vpo-JL.png" },
-    { "name": "Lutari", "image": "https://i.ibb.co/LDpJ6465/gn-V1nss.png" },
-    { "name": "Meerca", "image": "https://i.ibb.co/kgCnKRYR/h-YUxq9T.png" },
-    { "name": "Mynci", "image": "https://i.ibb.co/YFG2CK2H/C90t-Tdm.png" },
-    { "name": "Nimmo", "image": "https://i.ibb.co/9925knYb/TT72Ga6.png" },
-    { "name": "Ogrin", "image": "https://i.ibb.co/pj8XgyLP/ANAcfz-P.png" },
-    { "name": "Poogle", "image": "https://i.ibb.co/9kwt2BjJ/b-Cua17A.png" },
-    { "name": "Pteri", "image": "https://i.ibb.co/krF3Fyj/t-Dr9z8m.png" },
-    { "name": "Quiggle", "image": "https://i.ibb.co/vx5xmZCm/pa3M2Wy.png" },
-    { "name": "Ruki", "image": "https://i.ibb.co/XmN1WgK/Bnl-YHq3.png" },
-    { "name": "Scorchio", "image": "https://i.ibb.co/nss26H54/h-Sq4ITp.png" },
-    { "name": "Shoyru", "image": "https://i.ibb.co/Dg4688ZJ/o-Hefyd5.png" },
-    { "name": "Skeith", "image": "https://i.ibb.co/TqwFpxMp/Fs43Irb.png" },
-    { "name": "Techo", "image": "https://i.ibb.co/sv2yq1Hz/n4j-Gbri.png" },
-    { "name": "Tonu", "image": "https://i.ibb.co/KjtrCZyB/j4AX0Bz.png" },
-    { "name": "Uni", "image": "https://i.ibb.co/4w5ZZbyv/d-IYVBt-I.png" },
-    { "name": "Usul", "image": "https://i.ibb.co/RkW70n5N/cu-SIl-QO.png" },
-    { "name": "Wocky", "image": "https://i.ibb.co/WvzBXd3j/W3wo-U91.png" },
-    { "name": "Yurble", "image": "https://i.ibb.co/qMtQtFdn/JRsk00b.png" },
-    { "name": "Zafara", "image": "https://i.ibb.co/XrGNp0JW/gv-Lf-Wh1.png" }
+    {
+      "name": "Acara",
+      "image": "themes/img/candies/acara.png"
+    },
+    {
+      "name": "Aisha",
+      "image": "themes/img/candies/aisha.png"
+    },
+    {
+      "name": "Blumaroo",
+      "image": "themes/img/candies/blumaroo.png"
+    },
+    {
+      "name": "Bori",
+      "image": "themes/img/candies/bori.png"
+    },
+    {
+      "name": "Bruce",
+      "image": "themes/img/candies/bruce.png"
+    },
+    {
+      "name": "Buzz",
+      "image": "themes/img/candies/buzz.png"
+    },
+    {
+      "name": "Chia",
+      "image": "themes/img/candies/chia.png"
+    },
+    {
+      "name": "Chomby",
+      "image": "themes/img/candies/chomby.png"
+    },
+    {
+      "name": "Cybunny",
+      "image": "themes/img/candies/cybunny.png"
+    },
+    {
+      "name": "Draik",
+      "image": "themes/img/candies/draik.png"
+    },
+    {
+      "name": "Elephante",
+      "image": "themes/img/candies/elephante.png"
+    },
+    {
+      "name": "Eyrie",
+      "image": "themes/img/candies/eyrie.png"
+    },
+    {
+      "name": "Flotsam",
+      "image": "themes/img/candies/flotsam.png"
+    },
+    {
+      "name": "Gelert",
+      "image": "themes/img/candies/gelert.png"
+    },
+    {
+      "name": "Gnorbu",
+      "image": "themes/img/candies/gnorbu.png"
+    },
+    {
+      "name": "Grarrl",
+      "image": "themes/img/candies/grarrl.png"
+    },
+    {
+      "name": "Grundo",
+      "image": "themes/img/candies/grundo.png"
+    },
+    {
+      "name": "Hissi",
+      "image": "themes/img/candies/hissi.png"
+    },
+    {
+      "name": "Ixi",
+      "image": "themes/img/candies/ixi.png"
+    },
+    {
+      "name": "Jetsam",
+      "image": "themes/img/candies/jetsam.png"
+    },
+    {
+      "name": "JubJub",
+      "image": "themes/img/candies/jubjub.png"
+    },
+    {
+      "name": "Kacheek",
+      "image": "themes/img/candies/kacheek.png"
+    },
+    {
+      "name": "Kau",
+      "image": "themes/img/candies/kau.png"
+    },
+    {
+      "name": "Kiko",
+      "image": "themes/img/candies/kiko.png"
+    },
+    {
+      "name": "Koi",
+      "image": "themes/img/candies/koi.png"
+    },
+    {
+      "name": "Korbat",
+      "image": "themes/img/candies/korbat.png"
+    },
+    {
+      "name": "Kougra",
+      "image": "themes/img/candies/kougra.png"
+    },
+    {
+      "name": "Krawk",
+      "image": "themes/img/candies/krawk.png"
+    },
+    {
+      "name": "Kyrii",
+      "image": "themes/img/candies/kyrii.png"
+    },
+    {
+      "name": "Lupe",
+      "image": "themes/img/candies/lupe.png"
+    },
+    {
+      "name": "Lutari",
+      "image": "themes/img/candies/lutari.png"
+    },
+    {
+      "name": "Meerca",
+      "image": "themes/img/candies/meerca.png"
+    },
+    {
+      "name": "Mynci",
+      "image": "themes/img/candies/mynci.png"
+    },
+    {
+      "name": "Nimmo",
+      "image": "themes/img/candies/nimmo.png"
+    },
+    {
+      "name": "Ogrin",
+      "image": "themes/img/candies/ogrin.png"
+    },
+    {
+      "name": "Poogle",
+      "image": "themes/img/candies/poogle.png"
+    },
+    {
+      "name": "Pteri",
+      "image": "themes/img/candies/pteri.png"
+    },
+    {
+      "name": "Quiggle",
+      "image": "themes/img/candies/quiggle.png"
+    },
+    {
+      "name": "Ruki",
+      "image": "themes/img/candies/ruki.png"
+    },
+    {
+      "name": "Scorchio",
+      "image": "themes/img/candies/scorchio.png"
+    },
+    {
+      "name": "Shoyru",
+      "image": "themes/img/candies/shoyru.png"
+    },
+    {
+      "name": "Skeith",
+      "image": "themes/img/candies/skeith.png"
+    },
+    {
+      "name": "Techo",
+      "image": "themes/img/candies/techo.png"
+    },
+    {
+      "name": "Tonu",
+      "image": "themes/img/candies/tonu.png"
+    },
+    {
+      "name": "Uni",
+      "image": "themes/img/candies/uni.png"
+    },
+    {
+      "name": "Usul",
+      "image": "themes/img/candies/usul.png"
+    },
+    {
+      "name": "Wocky",
+      "image": "themes/img/candies/wocky.png"
+    },
+    {
+      "name": "Yurble",
+      "image": "themes/img/candies/yurble.png"
+    },
+    {
+      "name": "Zafara",
+      "image": "themes/img/candies/zafara.png"
+    }
   ]
 }
